@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-
+#if defined(_ZOS)
+#define _XOPEN_SOURCE_EXTENDED 1
+#undef _ALL_SOURCE
+#endif
 
 #include "ibmras/common/util/sysUtils.h"
 
@@ -26,8 +29,6 @@
 #elif defined(AIX)
 #include <sys/time.h>
 #elif defined(_ZOS)
-#define _XOPEN_SOURCE_EXTENDED 1
-#undef _ALL_SOURCE
 #include <sys/time.h>
 #endif
 
