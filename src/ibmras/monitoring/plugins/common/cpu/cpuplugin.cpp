@@ -394,6 +394,7 @@ struct CPUTime* CpuPlugin::getCPUTime() {
 		//We first retrieve the number of processors, since the total load will have to be divided by this value
 		int phys = 0;
 		uint64 nsStart, nsEnd;
+		nsStart = time_microseconds() * 1000;
 		size_t len = sizeof(phys);
 		struct CPUTime* cputime = new CPUTime;
 		int err = sysctlbyname("hw.physicalcpu", &phys, &len, NULL, 0);
@@ -407,15 +408,14 @@ struct CPUTime* CpuPlugin::getCPUTime() {
 		}
 //We do now get the PROCESS usage.
 		struct rusage usage;
-		nsStart = time_microseconds() * 1000;
 		err = getrusage(RUSAGE_SELF, &usage);
+		nsEnd = time_microseconds() * 1000;
 		if(!err) {
 			cputime->process = (usage.ru_utime.tv_sec*1000000 + usage.ru_utime.tv_usec + usage.ru_stime.tv_sec*1000000 + usage.ru_stime.tv_usec)*1000/cputime->nprocs;
 			cputime->total = 0;//TODO implement total cpu time (the API used by the top command is subject to change and would require testing on more than one platform, eg, not only 10.9.5)
 			cputime->time = nsStart + ((nsEnd - nsStart) / 2);
 		}
-		nsEnd = time_microseconds() * 1000;
-
+		
 		return cputime;
 #else
 		return NULL;
