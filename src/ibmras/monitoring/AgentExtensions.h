@@ -112,6 +112,7 @@ typedef struct agentCoreFunctions {
 
 typedef struct loaderCoreFunctions {
 	lifeCycle init;
+    lifeCycle initialize;
 	lifeCycle start;
 	lifeCycle stop;
 	lifeCycle shutdown;
@@ -128,6 +129,8 @@ typedef struct loaderCoreFunctions {
 typedef int (*PLUGIN_INITIALIZE)(const char* properties);
 typedef pushsource* (*PUSH_SOURCE_REGISTER)(agentCoreFunctions aCF, unsigned int provID);
 typedef void (*PUSH_CALLBACK)(monitordata* data);
+
+loaderCoreFunctions* loader_entrypoint();
 
 }
 #endif /* ibmras_monitoring_monitoring_h */
