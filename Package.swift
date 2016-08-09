@@ -7,6 +7,12 @@ import PackageDescription
    let fileManager = FileManager.default()
 #endif
 
+///file seperator
+let FILE_SEPARATOR="/"
+
+///need to drill down into the omr-agentcore directory from where we are
+_ = try fm.changeCurrentDirectoryPath("Packages" + FILE_SEPARATOR + "omr-agentcore)
+
 if fm.fileExists(atPath: "src/libagentcore") == false {
 
    /// Constant module directory names
@@ -23,9 +29,6 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
 
    ///Source directory name
    let SOURCE_DIR = "src"
-
-   ///file seperator
-   let FILE_SEPARATOR="/"
 
    ///module-specific source directories
    let IBMRAS_DIR = "ibmras"
