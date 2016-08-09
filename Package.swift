@@ -11,7 +11,7 @@ import PackageDescription
 let FILE_SEPARATOR="/"
 
 ///need to drill down into the omr-agentcore directory from where we are
-_ = try fm.changeCurrentDirectoryPath("Packages" + FILE_SEPARATOR + "omr-agentcore)
+_ = try fm.changeCurrentDirectoryPath("Packages" + FILE_SEPARATOR + "omr-agentcore")
 
 if fm.fileExists(atPath: "src/libagentcore") == false {
 
