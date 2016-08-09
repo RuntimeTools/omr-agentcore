@@ -17,8 +17,6 @@
 
 #ifndef ibmras_monitoring_monitoring_h
 #define ibmras_monitoring_monitoring_h
-#include <string>
-extern "C"{
 
 #ifndef PLUGIN_API_VERSION
 #define PLUGIN_API_VERSION "1.0"
@@ -51,7 +49,7 @@ typedef struct monitordata {
 	unsigned int sourceID;			/* source ID, previously supplied by the source during registration */
 	unsigned int size;				/* amount of data being provided */
 	const char *data;			/* char array of the data to store */
-	bool persistent;            /* persistent data will not be removed from the bucket */
+	int persistent;            /* persistent data will not be removed from the bucket */
 } monitordata;
 
 typedef monitordata* (*PULL_CALLBACK)(void);			/* shortcut definition for the pull source callback */
@@ -99,7 +97,7 @@ typedef void (*exposedLogger)(loggingLevel lev, const char * message);
 typedef const char * (*agentProperty)(const char * key);
 typedef void (*setAgentProp)(const char* key, const char* value);
 typedef void (*lifeCycle)();
-typedef bool (*loadPropFunc)(const char* filename);
+typedef int (*loadPropFunc)(const char* filename);
 typedef const char* (*getVer)();
 typedef void (*setLogLvls)();
 
@@ -132,7 +130,6 @@ typedef void (*PUSH_CALLBACK)(monitordata* data);
 
 loaderCoreFunctions* loader_entrypoint();
 
-}
 #endif /* ibmras_monitoring_monitoring_h */
 
 
