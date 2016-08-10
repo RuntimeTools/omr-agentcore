@@ -119,9 +119,9 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    let linuxVariations = ["defined(_Linux)", "defined(LINUX)", "defined(_LINUX)"]
    let fileEnum = fm.enumerator(atPath: srcDirPath)
    while let fileName = fileEnum?.nextObject() as? String {
+      print(fileName)
       ///only want source files
       if fileName.hasSuffix("cpp") {
-         print(fileName)
          var encoding : NSStringEncoding = NSUTF8StringEncoding
          var fileContents = try String(contentsOfFile: fileName, usedEncoding: &encoding)
          fileContents = fileContents.replacingOccurrences(of:MONITOR_SRC_DIR + AGENT_EXTENSIONS, with:AGENT_EXTENSIONS)
