@@ -117,7 +117,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    /// 3. All non-standard declarations of platform (_Linux, LINUX, _LINUX) need to be standardised to __LINUX__
    let linuxVariations = ["defined(_Linux)", "defined(LINUX)", "defined(_LINUX)"]
    let fileEnum = fm.enumerator(atPath: srcDirPath)
-   while let fn = fileEnum.nextObject() {
+   while let fn = fileEnum?.nextObject() {
       let fileName = String(fn)
       ///only want source files
       if fileName.hasSuffix("cpp") {
