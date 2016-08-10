@@ -104,7 +104,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
 
    ///put AgentExtensions.h into libagentcore's include directory so the functions can be exported
    _ = try fm.createDirectory(atPath: AGENT_CORE_DIR + FILE_SEPARATOR + "include", withIntermediateDirectories: false)
-   _ = try fm.copyItem(atPath: AGENT_CORE_DIR + FILE_SEPARATOR + MONITOR_SRC_DIR + AGENT_EXTENSIONS, 
+   _ = try fm.moveItem(atPath: AGENT_CORE_DIR + FILE_SEPARATOR + MONITOR_SRC_DIR + AGENT_EXTENSIONS, 
                        toPath: AGENT_CORE_DIR + FILE_SEPARATOR + "include" + FILE_SEPARATOR + AGENT_EXTENSIONS)
    
 
