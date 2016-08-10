@@ -7,7 +7,7 @@ import PackageDescription
    let fileManager = FileManager.default()
 #endif
 
-
+print("Initial directory path is " + fm.currentDirectoryPath)
 ///need to drill down into the omr-agentcore directory from where we are
 if fm.currentDirectoryPath.contains("omr-agentcore") == false {
    ///then we're not in the right directory - go look for agentcore in the Packages directory
@@ -117,6 +117,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    /// 2. All references to AgentExtensions.h in libagentcore files need to be changed, as we moved that to include
    /// 3. All non-standard declarations of platform (_Linux, LINUX, _LINUX) need to be standardised to __LINUX__
    let linuxVariations = ["defined(_Linux)", "defined(LINUX)", "defined(_LINUX)"]
+   print("Attepting to enumerate objects below " + srcDirPath)
    let fileEnum = fm.enumerator(atPath: srcDirPath)
    while let fileName = fileEnum?.nextObject() as? String {
       print(fileName)
