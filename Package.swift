@@ -111,7 +111,29 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    ///put properties dir into root so that it doesn't try to be a module
    _ =  try fm.moveItem(atPath: PROPERTIES_DIR, toPath: rootDirPath + FILE_SEPARATOR + PROPERTIES_DIR)
 
+
+   ///Now for the file editing - the following needs to be changed in source files:
+   /// 1. All source files need to refer to their compatriot header file relatively
+   /// 2. All references to AgentExtensions.h in libagentcore files need to be changed, as we moved that to include
+   /// 3. All non-standard declarations of platform (_Linux, LINUX, _LINUX) need to be standardised to __LINUX__
+   let linuxVariations = ["defined(_Linux)", "defined(LINUX)", "defined(_LINUX)"]
+   let fileEnum = fm.enumerator(atPath: srcDirPath)
+   while let fileName = fileEnum?.nextObject() as? String {
+      ///only want source files
+      if fileName.hasSuffix("cpp") {
+         print(fileName)
+         var encoding : NSStringEncoding = NSUTF8StringEncoding
+         var fileContents = try String(contentsOfFile: fileName, usedEncoding: &encoding)
+         fileContents = fileContents.replacingOccurrences(of:MONITOR_SRC_DIR + AGENT_EXTENSIONS, with:AGENT_EXTENSIONS)
+         for variation in linuxVariations {
+            fileContents = fileContents.replacingOccurrences(of: variation, with: "defined(__linux__)")
+         }
+         try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
+      }
+   }
+
 }
+
 #if os(Linux)
    let excludePortDir = "src/libagentcore/ibmras/common/port/osx"
 #else
