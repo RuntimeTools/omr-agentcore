@@ -123,7 +123,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       if fileName.hasSuffix("cpp") {
          print(fileName)
          var encoding : NSStringEncoding = NSUTF8StringEncoding
-         var fileContents = try String(contentsOfFile: fileName)
+         var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
          fileContents = fileContents.replacingOccurrences(of:MONITOR_SRC_DIR + AGENT_EXTENSIONS, with:AGENT_EXTENSIONS)
          for variation in linuxVariations {
             fileContents = fileContents.replacingOccurrences(of: variation, with: "defined(__linux__)")
