@@ -83,12 +83,12 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       let targetFile = targetPath.removeLast()
       _ = sourcePath.removeLast()
       //remove common directories from the start of the paths
-      while sourcePath.first == targetPath.first {
+      while !sourthPath.isEmpty && sourcePath.first == targetPath.first {
          _ = sourcePath.removeFirst()
          _ = targetPath.removeFirst()
       }
       var targetFilePath = ""
-      for _ in 1...sourcePath.count {
+      for _ in sourcePath {
          targetFilePath += "../"
       }
       for dir in targetPath {
