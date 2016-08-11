@@ -151,7 +151,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
             source = fileName
          } else {
             /// need a \ on the . of .h for the regex to match it
-            header = fileName.replacingOccurrences(of: ".", with: "\.")
+            header = fileName.replacingOccurrences(of: ".", with: "\\.")
          }
       }
       print("Working in \(dir), source = \(source), header= \(header)")
