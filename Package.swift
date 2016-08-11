@@ -113,7 +113,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
 
    ///Now for the file editing - the following needs to be changed in source files:
    /// 1. All source files need to refer to their compatriot header file relatively
-   /// 2. All references to AgentExtensions.h in libagentcore files need to be changed, as we moved that to include
+   /// 2. All references to AgentExtensions.h in files need to be flattened, as we moved that to libagentcore include
    /// 3. All non-standard declarations of platform (_Linux, LINUX, _LINUX) need to be standardised to __LINUX__
 
    /// 2. and 3. are the easy ones - let's do them first
@@ -139,8 +139,10 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    var workingModules = [CPU_PLUGIN_DIR, ENV_PLUGIN_DIR, MEM_PLUGIN_DIR, MQTT_PLUGIN_DIR, API_PLUGIN_DIR, OSTREAM_PLUGIN_DIR]
    var source = "", header = ""
    for dir in workingModules {
+      print("Attempting to enumerate " + srcDirPath + FILE_SEPARATOR + dir)
       fileEnum = fm.enumerator(atPath: srcDirPath + FILE_SEPARATOR + dir)
       while let fn = fileEnum?.nextObject() {
+         print(fn)
          let fileName = String(fn)
          if fileName.hasSuffix("cpp") {
             source = fileName
