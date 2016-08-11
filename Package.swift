@@ -73,8 +73,8 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    
    //relativePath function - given two filepaths under a common root, determine a relative path from the source to the target
    func relativePath(sourceFilePath: String, targetFilePath: String) -> String {
-      var sourcePath = sourceFilePath.componentsSeparated(by: FILE_SEPARATOR)
-      var targetPath = targetFilePath.componentsSeparated(by: "/")
+      var sourcePath = sourceFilePath.components(separatedBy: FILE_SEPARATOR)
+      var targetPath = targetFilePath.components(separatedBy: "/")
       ///Remove the last elements of the paths (the file names)
       ///retain the last element of targetPath for reinsertion later
       let targetFile = targetPath.removeLast()
@@ -85,11 +85,11 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
          _ = targetPath.removeFirst()
       }
       var targetFilePath = ""
-      for i in 1..sourcePath.count {
+      for _ in 1...sourcePath.count {
          targetFilePath += "../"
       }
       for dir in targetPath {
-         targetFilePath +="\(dir)/"
+         targetFilePath += "\(dir)/"
       }
       return targetFilePath + targetFile
    }
@@ -202,7 +202,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       print(fn)
       let fileName = String(fn)
       //ignore the include directory and anything that isn't a header or source file
-      if fileName.hasPrefix(IBMRAS_DIR) && (fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h") {
+      if fileName.hasPrefix(IBMRAS_DIR) && (fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h")) {
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
          fileContents = fileContents.replacingOccurrences(of: "#include \"(" + IBMRAS_DIR + ".*?)\"", 
                                                           with:"#include \"\(relativePath(fileName, $1))\"",
