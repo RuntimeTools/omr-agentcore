@@ -76,14 +76,14 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       print("In relativePath, source = \(sourceFilePath), target = \(targetFilePath)")
       var sourcePath = sourceFilePath.components(separatedBy: FILE_SEPARATOR)
       var targetPath = targetFilePath.components(separatedBy: "/")
-      print("sourcePath = " + sourcePath)
-      print("targetPath = " + targetPath)
+      print(sourcePath)
+      print(targetPath)
       ///Remove the last elements of the paths (the file names)
       ///retain the last element of targetPath for reinsertion later
       let targetFile = targetPath.removeLast()
       _ = sourcePath.removeLast()
       //remove common directories from the start of the paths
-      while !sourthPath.isEmpty && sourcePath.first == targetPath.first {
+      while !sourcePath.isEmpty && sourcePath.first == targetPath.first {
          _ = sourcePath.removeFirst()
          _ = targetPath.removeFirst()
       }
