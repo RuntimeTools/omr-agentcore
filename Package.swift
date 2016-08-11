@@ -137,7 +137,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    ///PAHO is now complete. All uncomplete modules (apart from agentcore) now have a single source file and a single header
    ///file in the same directory. Let's change those files now.
    var workingModules = [CPU_PLUGIN_DIR, ENV_PLUGIN_DIR, MEM_PLUGIN_DIR, MQTT_PLUGIN_DIR, API_PLUGIN_DIR, OSTREAM_PLUGIN_DIR]
-   var source = "", header = ""
+   var source = "", header = "", headerRegex = ""
    let prevWorkingDir = fm.currentDirectoryPath
    for dir in workingModules {
       let targetWorkingDir = srcDirPath + FILE_SEPARATOR + dir
@@ -147,20 +147,25 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       while let fn = fileEnum?.nextObject() {
          print(fn)
          let fileName = String(fn)
-         if fileName.hasSuffix("cpp") {
+         if fileName.hasSuffix(".h") {
             source = fileName
          } else {
             /// need a \ on the . of .h for the regex to match it
-            header = fileName.replacingOccurrences(of: ".", with: "\\.")
+            headerRegex = fileName.replacingOccurrences(of: ".", with: "\\.")
+            header = fileName
          }
       }
       print("Working in \(dir), source = \(source), header= \(header)")
       var fileContents = try String(contentsOfFile: source, encoding: encoding)
-      fileContents = fileContents.replacingOccurrences(of: "#include.*?"+header, with:"#include \"\(header)",
+      fileContents = fileContents.replacingOccurrences(of: "#include.*?"+headerRegex, with:"#include \"\(header)",
                                                        options: .regularExpressionSearch)
       fileContents = fileContents.replacingOccurrences(of: "#include \""+IBMRAS_DIR, 
                                                        with:"#include \"../"+AGENT_CORE_DIR+"/"+IBMRAS_DIR)
       try fileContents.write(toFile: source, atomically: true, encoding: encoding)
+      fileContents = try String(contentsOfFile: header, encoding: encoding)
+      fileContents = fileContents.replacingOccurrences(of: "#include \""+IBMRAS_DIR, 
+                                                       with:"#include \"../"+AGENT_CORE_DIR+"/"+IBMRAS_DIR)
+      try fileContents.write(toFile: header, atomically: true, encoding: encoding)
        
    }
    _ = fm.changeCurrentDirectoryPath(prevWorkingDir)
