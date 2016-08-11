@@ -73,8 +73,11 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    
    //relativePath function - given two filepaths under a common root, determine a relative path from the source to the target
    func relativePath(sourceFilePath: String, targetFilePath: String) -> String {
+      print("In relativePath, source = \(sourceFilePath), target = \(targetFilePath)")
       var sourcePath = sourceFilePath.components(separatedBy: FILE_SEPARATOR)
       var targetPath = targetFilePath.components(separatedBy: "/")
+      print("sourcePath = " + sourcePath)
+      print("targetPath = " + targetPath)
       ///Remove the last elements of the paths (the file names)
       ///retain the last element of targetPath for reinsertion later
       let targetFile = targetPath.removeLast()
@@ -91,6 +94,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       for dir in targetPath {
          targetFilePath += "\(dir)/"
       }
+      print("returning \(targetFilePath)\(targetFile)")
       return targetFilePath + targetFile
    }
 
