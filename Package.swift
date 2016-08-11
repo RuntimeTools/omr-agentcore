@@ -150,12 +150,13 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
          if fileName.hasSuffix("cpp") {
             source = fileName
          } else {
-            header = fileName
+            /// need a \ on the . of .h for the regex to match it
+            header = fileName.replacingOccurrences(of: ".", with: "\.")
          }
       }
       print("Working in \(dir), source = \(source), header= \(header)")
       var fileContents = try String(contentsOfFile: source, encoding: encoding)
-      fileContents = fileContents.replacingOccurrences(of: "#include*"+header, with:"#include \"\(header)",
+      fileContents = fileContents.replacingOccurrences(of: "#include.*?"+header, with:"#include \"\(header)",
                                                        options: .regularExpressionSearch)
       try fileContents.write(toFile: source, atomically: true, encoding: encoding)
        
