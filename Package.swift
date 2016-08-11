@@ -115,14 +115,16 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    /// 1. All source files need to refer to their compatriot header file relatively
    /// 2. All references to AgentExtensions.h in libagentcore files need to be changed, as we moved that to include
    /// 3. All non-standard declarations of platform (_Linux, LINUX, _LINUX) need to be standardised to __LINUX__
+
+   /// 2. and 3. are the easy ones - let's do them first
+   let encoding:NSStringEncoding = NSUTF8StringEncoding
    let linuxVariations = ["defined(_Linux)", "defined(LINUX)", "defined(_LINUX)"]
-   let fileEnum = fm.enumerator(atPath: srcDirPath)
+   var fileEnum = fm.enumerator(atPath: srcDirPath)
    while let fn = fileEnum?.nextObject() {
       let fileName = String(fn)
       ///only want source files
       if fileName.hasSuffix("cpp") {
          print(fileName)
-         var encoding : NSStringEncoding = NSUTF8StringEncoding
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
          fileContents = fileContents.replacingOccurrences(of:MONITOR_SRC_DIR + AGENT_EXTENSIONS, with:AGENT_EXTENSIONS)
          for variation in linuxVariations {
@@ -131,6 +133,32 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
          try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
       }
    }
+   
+   ///PAHO is now complete. All uncomplete modules (apart from agentcore) now have a single source file and a single header
+   ///file in the same directory. Let's change those files now.
+   var workingModules = [CPU_PLUGIN_DIR, ENV_PLUGIN_DIR, MEM_PLUGIN_DIR, MQTT_PLUGIN_DIR, API_PLUGIN_DIR, OSTREAM_PLUGIN_DIR]
+   var source = "", header = ""
+   for dir in workingModules {
+      fileEnum = fm.enumerator(atPath: srcDirPath + FILE_SEPARATOR + dir)
+      while let fn = fileEnum?.nextObject() {
+         let fileName = String(fn)
+         if fileName.hasSuffix("cpp") {
+            source = fileName
+         } else {
+            ///we only need the name of the header, without the path stuff
+            let slashChar:Character = Character(FILE_SEPARATOR)
+            let slashIndex = fileName.characters.index(of: slashChar)!
+            let startIndex = fileName.characters.index(after: slashIndex)
+            header = String(fileName.characters.suffix(from: startIndex))
+         }
+      }
+      print("Working in \(dir), source = \(source), header= \(header)")
+      var fileContents = try String(contentsOfFile: source, encoding: encoding)
+      fileContents = fileContents.replacingOccurrences(of: "#include*"+header, with:"#include \"\(header)",
+                                                       options: .regularExpressionSearch)
+      try fileContents.write(toFile: source, atomically: true, encoding: encoding)
+       
+   }   
 
 }
 
