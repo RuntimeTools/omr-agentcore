@@ -211,7 +211,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    }
    
    //finally, we alter libagentcore's headers to become relative.
-   let targetWorkingDir = srcDirPath + FILE_SEPARATOR + AGENT_CORE_DIR
+   targetWorkingDir = srcDirPath + FILE_SEPARATOR + AGENT_CORE_DIR
    _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
    print("Attempting to enumerate " + targetWorkingDir)
    fileEnum = fm.enumerator(atPath: targetWorkingDir)
