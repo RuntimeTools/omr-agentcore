@@ -197,6 +197,19 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    }
    _ = fm.changeCurrentDirectoryPath(prevWorkingDir)
    
+   //MQTT headers are required by the libmqttplugin's files
+   let targetWorkingDir = srcDirPath + FILE_SEPARATOR + MQTT_PLUGIN_DIR
+   _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
+   print("Attempting to enumerate " + targetWorkingDir)
+   fileEnum = fm.enumerator(atPath: targetWorkingDir)
+   while let fn = fileEnum?.nextObject() {
+      let fileName = String(fn)
+      var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
+      fileContents = fileContents.replacingOccurrences(of: "#include \"MQTT", 
+                                                       with:"#include \"../"+PAHO+"/"+SOURCE_DIR+"/MQTT")
+      try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
+   }
+   
    //finally, we alter libagentcore's headers to become relative.
    let targetWorkingDir = srcDirPath + FILE_SEPARATOR + AGENT_CORE_DIR
    _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
