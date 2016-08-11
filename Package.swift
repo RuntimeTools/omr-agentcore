@@ -147,7 +147,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       while let fn = fileEnum?.nextObject() {
          print(fn)
          let fileName = String(fn)
-         if fileName.hasSuffix(".h") {
+         if fileName.hasSuffix(".cpp") {
             source = fileName
          } else {
             /// need a \ on the . of .h for the regex to match it
