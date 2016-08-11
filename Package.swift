@@ -122,8 +122,8 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    var fileEnum = fm.enumerator(atPath: srcDirPath)
    while let fn = fileEnum?.nextObject() {
       let fileName = String(fn)
-      ///only want source files
-      if fileName.hasSuffix("cpp") {
+      ///only want source files or header files
+      if fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h") {
          print(fileName)
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
          fileContents = fileContents.replacingOccurrences(of:MONITOR_SRC_DIR + AGENT_EXTENSIONS, with:AGENT_EXTENSIONS)
@@ -158,6 +158,8 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       var fileContents = try String(contentsOfFile: source, encoding: encoding)
       fileContents = fileContents.replacingOccurrences(of: "#include.*?"+header, with:"#include \"\(header)",
                                                        options: .regularExpressionSearch)
+      fileContents = fileContents.replacingOccurrences(of: "#include \""+IBMRAS_DIR, 
+                                                       with:"#include \"../"+AGENT_CORE_DIR+"/"+IBMRAS_DIR)
       try fileContents.write(toFile: source, atomically: true, encoding: encoding)
        
    }
