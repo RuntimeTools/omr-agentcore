@@ -138,20 +138,19 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    ///file in the same directory. Let's change those files now.
    var workingModules = [CPU_PLUGIN_DIR, ENV_PLUGIN_DIR, MEM_PLUGIN_DIR, MQTT_PLUGIN_DIR, API_PLUGIN_DIR, OSTREAM_PLUGIN_DIR]
    var source = "", header = ""
+   let prevWorkingDir = fm.currentDirectoryPath
    for dir in workingModules {
-      print("Attempting to enumerate " + srcDirPath + FILE_SEPARATOR + dir)
-      fileEnum = fm.enumerator(atPath: srcDirPath + FILE_SEPARATOR + dir)
+      let targetWorkingDir = srcDirPath + FILE_SEPARATOR + dir
+      _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
+      print("Attempting to enumerate " + targetWorkingDir)
+      fileEnum = fm.enumerator(atPath: targetWorkingDir)
       while let fn = fileEnum?.nextObject() {
          print(fn)
          let fileName = String(fn)
          if fileName.hasSuffix("cpp") {
             source = fileName
          } else {
-            ///we only need the name of the header, without the path stuff
-            let slashChar:Character = Character(FILE_SEPARATOR)
-            let slashIndex = fileName.characters.index(of: slashChar)!
-            let startIndex = fileName.characters.index(after: slashIndex)
-            header = String(fileName.characters.suffix(from: startIndex))
+            header = fileName
          }
       }
       print("Working in \(dir), source = \(source), header= \(header)")
@@ -160,7 +159,8 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
                                                        options: .regularExpressionSearch)
       try fileContents.write(toFile: source, atomically: true, encoding: encoding)
        
-   }   
+   }
+   _ = fm.changeCurrentDirectoryPath(prevWorkingDir)
 
 }
 
