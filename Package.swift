@@ -56,7 +56,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    ///Public header file names
    let AGENT_EXTENSIONS = "AgentExtensions.h"
 
-   ///moveSource function
+   ///moveSource function - moves the original source from it's ibmras structure into its new swift module
    func moveSource(rootDir: String, pluginSrcDir: String, pluginTargetDir: String) throws {
 
       ///move plugin source to plugin directories - need to call this from rootDir
@@ -69,6 +69,29 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
          print("Attempting to move " + file + " to " + targetDir + FILE_SEPARATOR + file)
          _ = try fm.moveItem(atPath:file, toPath: targetDir + FILE_SEPARATOR + file)
       }
+   }
+   
+   //relativePath function - given two filepaths under a common root, determine a relative path from the source to the target
+   func relativePath(sourceFilePath: String, targetFilePath: String) -> String {
+      var sourcePath = sourceFilePath.componentsSeparated(by: FILE_SEPARATOR)
+      var targetPath = targetFilePath.componentsSeparated(by: "/")
+      ///Remove the last elements of the paths (the file names)
+      ///retain the last element of targetPath for reinsertion later
+      let targetFile = targetPath.removeLast()
+      _ = sourcePath.removeLast()
+      //remove common directories from the start of the paths
+      while sourcePath.first == targetPath.first {
+         _ = sourcePath.removeFirst()
+         _ = targetPath.removeFirst()
+      }
+      var targetFilePath = ""
+      for i in 1..sourcePath.count {
+         targetFilePath += "../"
+      }
+      for dir in targetPath {
+         targetFilePath +="\(dir)/"
+      }
+      return targetFilePath + targetFile
    }
 
    let rootDirPath = fm.currentDirectoryPath
@@ -169,7 +192,25 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
        
    }
    _ = fm.changeCurrentDirectoryPath(prevWorkingDir)
-
+   
+   //finally, we alter libagentcore's headers to become relative.
+   let targetWorkingDir = srcDirPath + FILE_SEPARATOR + AGENT_CORE_DIR
+   _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
+   print("Attempting to enumerate " + targetWorkingDir)
+   fileEnum = fm.enumerator(atPath: targetWorkingDir)
+   while let fn = fileEnum?.nextObject() {
+      print(fn)
+      let fileName = String(fn)
+      //ignore the include directory and anything that isn't a header or source file
+      if fileName.hasPrefix(IBMRAS_DIR) && (fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h") {
+         var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
+         fileContents = fileContents.replacingOccurrences(of: "#include \"(" + IBMRAS_DIR + ".*?)\"", 
+                                                          with:"#include \"\(relativePath(fileName, $1))\"",
+                                                          options: .regularExpressionSearch)
+         try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
+      }
+   }
+   
 }
 
 #if os(Linux)
