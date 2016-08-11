@@ -209,7 +209,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       if fileName.hasPrefix(IBMRAS_DIR) && (fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h")) {
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
 
-         while let foundRange = fileContents.range(of: "#include \""+IBMRAS_DIR+".*?\"", options: .regularExpressionSearch) {
+         while let foundRange = fileContents.range(of: "#include [\"<]"+IBMRAS_DIR+".*?[\">]", options: .regularExpressionSearch) {
             var foundString = fileContents.substring(with: foundRange)
             print(foundString)
             ///get rid of the include part and the final quote
