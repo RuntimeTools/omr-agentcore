@@ -161,6 +161,19 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       }
    }
    
+   //MQTT headers are required by the libmqttplugin's files
+   var targetWorkingDir = srcDirPath + FILE_SEPARATOR + MQTT_PLUGIN_DIR
+   _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
+   print("Attempting to enumerate " + targetWorkingDir)
+   fileEnum = fm.enumerator(atPath: targetWorkingDir)
+   while let fn = fileEnum?.nextObject() {
+      let fileName = String(fn)
+      var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
+      fileContents = fileContents.replacingOccurrences(of: "#include \"MQTT", 
+                                                       with:"#include \"../"+PAHO+"/"+SOURCE_DIR+"/MQTT")
+      try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
+   }
+   
    ///PAHO is now complete. All uncomplete modules (apart from agentcore) now have a single source file and a single header
    ///file in the same directory. Let's change those files now.
    var workingModules = [CPU_PLUGIN_DIR, ENV_PLUGIN_DIR, MEM_PLUGIN_DIR, MQTT_PLUGIN_DIR, API_PLUGIN_DIR, OSTREAM_PLUGIN_DIR]
@@ -196,19 +209,6 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
        
    }
    _ = fm.changeCurrentDirectoryPath(prevWorkingDir)
-   
-   //MQTT headers are required by the libmqttplugin's files
-   var targetWorkingDir = srcDirPath + FILE_SEPARATOR + MQTT_PLUGIN_DIR
-   _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
-   print("Attempting to enumerate " + targetWorkingDir)
-   fileEnum = fm.enumerator(atPath: targetWorkingDir)
-   while let fn = fileEnum?.nextObject() {
-      let fileName = String(fn)
-      var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
-      fileContents = fileContents.replacingOccurrences(of: "#include \"MQTT", 
-                                                       with:"#include \"../"+PAHO+"/"+SOURCE_DIR+"/MQTT")
-      try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
-   }
    
    //finally, we alter libagentcore's headers to become relative.
    targetWorkingDir = srcDirPath + FILE_SEPARATOR + AGENT_CORE_DIR
@@ -249,7 +249,8 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
 let package = Package(
    name: "omr-agentcore",
    targets: [
-      Target(name: "libmqttplugin", dependencies: [.Target(name: "org.eclipse.paho.mqtt.c")]),
+      Target(name: "libmqttplugin", dependencies: [.Target(name: "org.eclipse.paho.mqtt.c"),
+                                                   .Target(name: "libagentcore")]),
       Target(name: "libcpuplugin", dependencies: [.Target(name: "libagentcore")]),
       Target(name: "libenvplugin", dependencies: [.Target(name: "libagentcore")]),
       Target(name: "libmemplugin", dependencies: [.Target(name: "libagentcore")]),
