@@ -204,9 +204,19 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       //ignore the include directory and anything that isn't a header or source file
       if fileName.hasPrefix(IBMRAS_DIR) && (fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h")) {
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
-         fileContents = fileContents.replacingOccurrences(of: "#include \"(" + IBMRAS_DIR + ".*?)\"", 
-                                                          with:"#include \"\(relativePath(fileName, $1))\"",
-                                                          options: .regularExpressionSearch)
+
+         while let foundRange = fileContents.range(of: "#include \""+IBMRAS_DIR+".*?\"", options: .regularExpressionSearch) {
+            var foundString = fileContents.substring(with: foundRange)
+            print(foundString)
+            ///get rid of the include part and the final quote
+            foundString = foundString.substring(from: foundString.index(foundString.startIndex, offsetBy: 10))
+            foundString = foundString.substring(to: foundString.index(foundString.endIndex, offsetBy: -1))
+            print(foundString)
+            ///replace with the new concocted string
+            fileContents.replaceSubrange(foundRange, with: "#include \"\(relativePath(sourceFilePath: fileName, targetFilePath: foundString))\"")
+         }
+
+                                                          ///with:"#include \"\(relativePath(fileName, $1))\"",
          try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
       }
    }
