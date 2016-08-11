@@ -198,7 +198,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    _ = fm.changeCurrentDirectoryPath(prevWorkingDir)
    
    //MQTT headers are required by the libmqttplugin's files
-   let targetWorkingDir = srcDirPath + FILE_SEPARATOR + MQTT_PLUGIN_DIR
+   var targetWorkingDir = srcDirPath + FILE_SEPARATOR + MQTT_PLUGIN_DIR
    _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
    print("Attempting to enumerate " + targetWorkingDir)
    fileEnum = fm.enumerator(atPath: targetWorkingDir)
