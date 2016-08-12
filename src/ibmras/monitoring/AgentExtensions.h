@@ -17,7 +17,6 @@
 
 #ifndef ibmras_monitoring_monitoring_h
 #define ibmras_monitoring_monitoring_h
-#include <string>
 extern "C"{
 
 #ifndef PLUGIN_API_VERSION
@@ -125,6 +124,7 @@ typedef struct loaderCoreFunctions {
 
 } loaderCoreFunctions;
 
+loaderCoreFunctions* loader_entrypoint()
 
 typedef int (*PLUGIN_INITIALIZE)(const char* properties);
 typedef pushsource* (*PUSH_SOURCE_REGISTER)(agentCoreFunctions aCF, unsigned int provID);

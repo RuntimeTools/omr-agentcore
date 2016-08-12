@@ -22,6 +22,7 @@
 
 #include "ibmras/monitoring/AgentExtensions.h"
 #include "ibmras/monitoring/Typesdef.h"
+#include <string>
 
 namespace ibmras {
 namespace monitoring {
