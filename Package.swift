@@ -164,6 +164,10 @@ if fm.fileExists(atPath: "src/agentcore") == false {
          for variation in linuxVariations {
             fileContents = fileContents.replacingOccurrences(of: variation, with: "defined(__linux__)")
          }
+         ///AAARGH HACK HACK HACK
+         if fileName == "Heap.c" {
+            fileContents = fileContents.replacingOccurrences(of: "roundup", with: "roundup_")
+         }
          try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
       }
    }
