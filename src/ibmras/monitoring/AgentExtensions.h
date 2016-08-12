@@ -124,7 +124,7 @@ typedef struct loaderCoreFunctions {
 
 } loaderCoreFunctions;
 
-loaderCoreFunctions* loader_entrypoint()
+loaderCoreFunctions* loader_entrypoint();
 
 typedef int (*PLUGIN_INITIALIZE)(const char* properties);
 typedef pushsource* (*PUSH_SOURCE_REGISTER)(agentCoreFunctions aCF, unsigned int provID);
