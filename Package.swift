@@ -29,7 +29,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    let API_PLUGIN_DIR = "hcapiplugin"
    let OSTREAM_PLUGIN_DIR = "ostreamplugin"
    let MODULE_DIR_LIST = [AGENT_CORE_DIR, CPU_PLUGIN_DIR, ENV_PLUGIN_DIR, MEM_PLUGIN_DIR,
-                          MQTT_PLUGIN_DIR, API_PLUGIN_DIR, OSTREAM_PLUGIN_DIR]
+                          MQTT_PLUGIN_DIR, API_PLUGIN_DIR, OSTREAM_PLUGIN_DIR, PAHO]
 
    ///Source directory name
    let SOURCE_DIR = "src"
@@ -107,7 +107,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
 
    /// create the module directories
    for dir in MODULE_DIR_LIST {
-      _ = try fm.createDirectory(atPath: dir, withIntermediateDirectories: false)
+      _ = try fm.createDirectory(atPath: dir+FILE_SEPARATOR+"include", withIntermediateDirectories: true)
    }
 
    ///move plugin source to plugin directories
