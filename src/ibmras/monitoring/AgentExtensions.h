@@ -74,12 +74,20 @@ typedef struct srcheader {
 
 typedef struct pushsource {
 	srcheader header;			/* common source header */
+#ifdef __cplusplus
 	pushsource *next;			/* next source or null if this is the last one in the list */
+#else
+	struct pushsource *next;		/* next source or null if this is the last one in the list */
+#endif
 } pushsource;
 
 typedef struct pullsource{
 	srcheader header;			/* common source header */
+#ifdef __cplusplus
 	pullsource *next;			/* the next source or null if this is the last one in the list */
+#else
+	struct pullsource *next;			/* the next source or null if this is the last one in the list */
+#endif
 	unsigned int pullInterval;		/* time in seconds at which data should be pulled from this source */
 	PULL_CALLBACK callback;
 	PULL_CALLBACK_COMPLETE complete;
@@ -101,7 +109,11 @@ enum loggingLevel {
 
 typedef void (*pushData)(monitordata *data);
 typedef int (*sendMessage)(const char * sourceId, unsigned int size,void *data);
+#ifdef __cplusplus
 typedef void (*exposedLogger)(loggingLevel lev, const char * message);
+#else
+typedef void (*exposedLogger)(enum loggingLevel lev, const char * message);
+#endif
 typedef const char * (*agentProperty)(const char * key);
 typedef void (*setAgentProp)(const char* key, const char* value);
 typedef void (*lifeCycle)();
