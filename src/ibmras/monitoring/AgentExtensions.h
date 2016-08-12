@@ -53,7 +53,11 @@ typedef struct monitordata {
 	unsigned int sourceID;			/* source ID, previously supplied by the source during registration */
 	unsigned int size;				/* amount of data being provided */
 	const char *data;			/* char array of the data to store */
+#ifdef __cplusplus
 	bool persistent;            /* persistent data will not be removed from the bucket */
+#else
+	bool persistent;            /* persistent data will not be removed from the bucket */
+#endif
 } monitordata;
 
 typedef monitordata* (*PULL_CALLBACK)(void);			/* shortcut definition for the pull source callback */
@@ -101,7 +105,11 @@ typedef void (*exposedLogger)(loggingLevel lev, const char * message);
 typedef const char * (*agentProperty)(const char * key);
 typedef void (*setAgentProp)(const char* key, const char* value);
 typedef void (*lifeCycle)();
+#ifdef __cplusplus
 typedef bool (*loadPropFunc)(const char* filename);
+#else
+typedef int (*loadPropFunc)(const char* filename);
+#endif
 typedef const char* (*getVer)();
 typedef void (*setLogLvls)();
 
