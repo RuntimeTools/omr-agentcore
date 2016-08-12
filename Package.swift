@@ -147,7 +147,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
 
    /// 2. and 3. are the easy ones - let's do them first
    let encoding:String.Encoding = String.Encoding.utf8
-   let linuxVariations = ["defined(_Linux)", "defined(LINUX)", "defined(_LINUX)"]
+   let linuxVariations = ["defined(_Linux)", "defined(LINUX)", "defined(_LINUX)", "defined (_LINUX)"]
    var fileEnum = fm.enumerator(atPath: srcDirPath)
    while let fn = fileEnum?.nextObject() {
       let fileName = String(fn)
