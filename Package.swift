@@ -109,8 +109,8 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    for dir in MODULE_DIR_LIST {
       _ = try fm.createDirectory(atPath: dir+FILE_SEPARATOR+"include", withIntermediateDirectories: true)
    }
-   //Paho also needs an include directory
-   _ = try fm.createDirectory(atPath: dir+FILE_SEPARATOR+"include", withIntermediateDirectories: false)
+   //Paho also needs an include directory, but already exists
+   _ = try fm.createDirectory(atPath: PAHO+FILE_SEPARATOR+"include", withIntermediateDirectories: false)
 
    ///move plugin source to plugin directories
    try moveSource(rootDir: srcDirPath, pluginSrcDir: CPU_PLUGIN_SRC_DIR, pluginTargetDir: CPU_PLUGIN_DIR)
