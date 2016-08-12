@@ -249,7 +249,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
 let package = Package(
    name: "omr-agentcore",
    targets: [
-      Target(name: "mqttplugin", dependencies: [.Target(name: "org.eclipse.paho.mqtt.c"),
+      Target(name: "mqttplugin", dependencies: [.Target(name: "paho"),
                                                    .Target(name: "agentcore")]),
       Target(name: "cpuplugin", dependencies: [.Target(name: "agentcore")]),
       Target(name: "envplugin", dependencies: [.Target(name: "agentcore")]),
@@ -261,14 +261,14 @@ let package = Package(
               "src/agentcore/ibmras/common/port/windows",
               "src/agentcore/ibmras/common/data",
               "src/agentcore/ibmras/common/util/memUtils.cpp",
-              "src/org.eclipse.paho.mqtt.c/Windows Build",
-              "src/org.eclipse.paho.mqtt.c/build",
-              "src/org.eclipse.paho.mqtt.c/doc",
-              "src/org.eclipse.paho.mqtt.c/test",
-              "src/org.eclipse.paho.mqtt.c/src/MQTTClient.c",
-              "src/org.eclipse.paho.mqtt.c/src/MQTTVersion.c",
-              "src/org.eclipse.paho.mqtt.c/src/SSLSocket.c",
-              "src/org.eclipse.paho.mqtt.c/src/samples",
+              "src/paho/Windows Build",
+              "src/paho/build",
+              "src/paho/doc",
+              "src/paho/test",
+              "src/paho/src/MQTTClient.c",
+              "src/paho/src/MQTTVersion.c",
+              "src/paho/src/SSLSocket.c",
+              "src/paho/src/samples",
               excludePortDir
    ]
 )
