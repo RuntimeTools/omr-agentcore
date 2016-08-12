@@ -167,7 +167,8 @@ if fm.fileExists(atPath: "src/agentcore") == false {
          try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
       }
       ///AAARGH HACK HACK HACK
-      if fileName == "Heap.c" {
+      if fileName.hasSuffix("Heap.c") {
+         print("HACK Heap.c hack it to death and back I tells ya")
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
          fileContents = fileContents.replacingOccurrences(of: "roundup", with: "roundup_")
          try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
