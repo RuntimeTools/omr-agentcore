@@ -111,7 +111,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
 
    /// create the module directories
    for dir in MODULE_DIR_LIST {
-      _ = try fm.createDirectory(atPath: dir+FILE_SEPARATOR+"include", withIntermediateDirectories: true)
+      _ = try fm.createDirectory(atPath: dir+"\include", withIntermediateDirectories: true)
    }
    
 
