@@ -56,7 +56,7 @@ typedef struct monitordata {
 #ifdef __cplusplus
 	bool persistent;            /* persistent data will not be removed from the bucket */
 #else
-	bool persistent;            /* persistent data will not be removed from the bucket */
+	int persistent;            /* persistent data will not be removed from the bucket */
 #endif
 } monitordata;
 
