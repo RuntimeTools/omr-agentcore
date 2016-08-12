@@ -17,7 +17,10 @@
 
 #ifndef ibmras_monitoring_monitoring_h
 #define ibmras_monitoring_monitoring_h
+
+#ifdef __cplusplus
 extern "C"{
+#endif
 
 #ifndef PLUGIN_API_VERSION
 #define PLUGIN_API_VERSION "1.0"
@@ -130,7 +133,10 @@ typedef int (*PLUGIN_INITIALIZE)(const char* properties);
 typedef pushsource* (*PUSH_SOURCE_REGISTER)(agentCoreFunctions aCF, unsigned int provID);
 typedef void (*PUSH_CALLBACK)(monitordata* data);
 
+#ifdef __cplusplus
 }
+#endif
+
 #endif /* ibmras_monitoring_monitoring_h */
 
 
