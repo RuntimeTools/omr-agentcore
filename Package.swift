@@ -1,7 +1,12 @@
 import Foundation
 import PackageDescription
 
-let fm = FileManager.default()
+#if os(Linux)
+   let fm = FileManager.default()
+#else
+   let fm = FileManager.default
+#endif
+
 
 ///need to drill down into the omr-agentcore directory from where we are
 if fm.currentDirectoryPath.contains("omr-agentcore") == false {
