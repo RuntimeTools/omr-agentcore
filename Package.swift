@@ -4,7 +4,7 @@ import PackageDescription
 #if os(Linux)
    let fm = NSFileManager.defaultManager()
 #else
-   let fileManager = FileManager.default()
+   let fm = NSFileManager.default()
 #endif
 
 ///need to drill down into the omr-agentcore directory from where we are
@@ -20,17 +20,17 @@ if fm.currentDirectoryPath.contains("omr-agentcore") == false {
    }
 }
 
-if fm.fileExists(atPath: "src/libagentcore") == false {
+if fm.fileExists(atPath: "src/agentcore") == false {
 
-   /// Constant module directory names
+   /// Module directory names
    let PAHO = "org.eclipse.paho.mqtt.c"
-   let AGENT_CORE_DIR = "libagentcore"
-   let CPU_PLUGIN_DIR = "libcpuplugin"
-   let ENV_PLUGIN_DIR = "libenvplugin"
-   let MEM_PLUGIN_DIR = "libmemplugin"
-   let MQTT_PLUGIN_DIR = "libmqttplugin"
-   let API_PLUGIN_DIR = "libhcapiplugin"
-   let OSTREAM_PLUGIN_DIR = "libostreamplugin"
+   let AGENT_CORE_DIR = "agentcore"
+   let CPU_PLUGIN_DIR = "cpuplugin"
+   let ENV_PLUGIN_DIR = "envplugin"
+   let MEM_PLUGIN_DIR = "memplugin"
+   let MQTT_PLUGIN_DIR = "mqttplugin"
+   let API_PLUGIN_DIR = "hcapiplugin"
+   let OSTREAM_PLUGIN_DIR = "ostreamplugin"
    let MODULE_DIR_LIST = [AGENT_CORE_DIR, CPU_PLUGIN_DIR, ENV_PLUGIN_DIR, MEM_PLUGIN_DIR,
                           MQTT_PLUGIN_DIR, API_PLUGIN_DIR, OSTREAM_PLUGIN_DIR]
 
@@ -124,11 +124,11 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    /// go back to the source directory
    _ = fm.changeCurrentDirectoryPath(srcDirPath)
 
-   ///put the rest of ibmras under libagentcore
+   ///put the rest of ibmras under agentcore
    _ = try fm.moveItem(atPath: IBMRAS_DIR, toPath: AGENT_CORE_DIR + FILE_SEPARATOR + IBMRAS_DIR)
 
 
-   ///put AgentExtensions.h into libagentcore's include directory so the functions can be exported
+   ///put AgentExtensions.h into agentcore's include directory so the functions can be exported
    _ = try fm.createDirectory(atPath: AGENT_CORE_DIR + FILE_SEPARATOR + "include", withIntermediateDirectories: false)
    _ = try fm.moveItem(atPath: AGENT_CORE_DIR + FILE_SEPARATOR + MONITOR_SRC_DIR + AGENT_EXTENSIONS, 
                        toPath: AGENT_CORE_DIR + FILE_SEPARATOR + "include" + FILE_SEPARATOR + AGENT_EXTENSIONS)
@@ -140,7 +140,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
 
    ///Now for the file editing - the following needs to be changed in source files:
    /// 1. All source files need to refer to their compatriot header file relatively
-   /// 2. All references to AgentExtensions.h in files need to be flattened, as we moved that to libagentcore include
+   /// 2. All references to AgentExtensions.h in files need to be flattened, as we moved that to agentcore include
    /// 3. All non-standard declarations of platform (_Linux, LINUX, _LINUX) need to be standardised to __LINUX__
 
    /// 2. and 3. are the easy ones - let's do them first
@@ -161,7 +161,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       }
    }
    
-   //MQTT headers are required by the libmqttplugin's files
+   //MQTT headers are required by the mqttplugin's files
    var targetWorkingDir = srcDirPath + FILE_SEPARATOR + MQTT_PLUGIN_DIR
    _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
    print("Attempting to enumerate " + targetWorkingDir)
@@ -171,6 +171,9 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
       var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
       fileContents = fileContents.replacingOccurrences(of: "#include \"MQTT", 
                                                        with:"#include \"../"+PAHO+"/"+SOURCE_DIR+"/MQTT")
+      ///we also need to do this with Heap.h
+      fileContents = fileContents.replacingOccurrences(of: "#include \"Heap.h", 
+                                                       with:"#include \"../"+PAHO+"/"+SOURCE_DIR+"/Heap.h")
       try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
    }
    
@@ -210,7 +213,7 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
    }
    _ = fm.changeCurrentDirectoryPath(prevWorkingDir)
    
-   //finally, we alter libagentcore's headers to become relative.
+   //finally, we alter agentcore's headers to become relative.
    targetWorkingDir = srcDirPath + FILE_SEPARATOR + AGENT_CORE_DIR
    _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
    print("Attempting to enumerate " + targetWorkingDir)
@@ -241,26 +244,26 @@ if fm.fileExists(atPath: "src/libagentcore") == false {
 }
 
 #if os(Linux)
-   let excludePortDir = "src/libagentcore/ibmras/common/port/osx"
+   let excludePortDir = "src/agentcore/ibmras/common/port/osx"
 #else
-   let excludePortDir = "src/libagentcore/ibmras/common/port/linux"
+   let excludePortDir = "src/agentcore/ibmras/common/port/linux"
 #endif
 
 let package = Package(
    name: "omr-agentcore",
    targets: [
-      Target(name: "libmqttplugin", dependencies: [.Target(name: "org.eclipse.paho.mqtt.c"),
-                                                   .Target(name: "libagentcore")]),
-      Target(name: "libcpuplugin", dependencies: [.Target(name: "libagentcore")]),
-      Target(name: "libenvplugin", dependencies: [.Target(name: "libagentcore")]),
-      Target(name: "libmemplugin", dependencies: [.Target(name: "libagentcore")]),
-      Target(name: "libostreamplugin", dependencies: [.Target(name: "libagentcore")]),
-      Target(name: "libhcapiplugin", dependencies: [.Target(name: "libagentcore")])
+      Target(name: "mqttplugin", dependencies: [.Target(name: "org.eclipse.paho.mqtt.c"),
+                                                   .Target(name: "agentcore")]),
+      Target(name: "cpuplugin", dependencies: [.Target(name: "agentcore")]),
+      Target(name: "envplugin", dependencies: [.Target(name: "agentcore")]),
+      Target(name: "memplugin", dependencies: [.Target(name: "agentcore")]),
+      Target(name: "ostreamplugin", dependencies: [.Target(name: "agentcore")]),
+      Target(name: "hcapiplugin", dependencies: [.Target(name: "agentcore")])
    ],
-   exclude: [ "src/libagentcore/ibmras/common/port/aix",
-              "src/libagentcore/ibmras/common/port/windows",
-              "src/libagentcore/ibmras/common/data",
-              "src/libagentcore/ibmras/common/util/memUtils.cpp",
+   exclude: [ "src/agentcore/ibmras/common/port/aix",
+              "src/agentcore/ibmras/common/port/windows",
+              "src/agentcore/ibmras/common/data",
+              "src/agentcore/ibmras/common/util/memUtils.cpp",
               "src/org.eclipse.paho.mqtt.c/Windows Build",
               "src/org.eclipse.paho.mqtt.c/build",
               "src/org.eclipse.paho.mqtt.c/doc",
