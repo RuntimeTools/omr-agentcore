@@ -1,11 +1,7 @@
 import Foundation
 import PackageDescription
 
-#if os(Linux)
-   let fm = NSFileManager.defaultManager()
-#else
-   let fm = NSFileManager.default()
-#endif
+let fm = FileManager.default()
 
 ///need to drill down into the omr-agentcore directory from where we are
 if fm.currentDirectoryPath.contains("omr-agentcore") == false {
@@ -23,7 +19,8 @@ if fm.currentDirectoryPath.contains("omr-agentcore") == false {
 if fm.fileExists(atPath: "src/agentcore") == false {
 
    /// Module directory names
-   let PAHO = "org.eclipse.paho.mqtt.c"
+   let PAHO_SRC_DIR = "org.eclipse.paho.mqtt.c"
+   let PAHO = "paho"
    let AGENT_CORE_DIR = "agentcore"
    let CPU_PLUGIN_DIR = "cpuplugin"
    let ENV_PLUGIN_DIR = "envplugin"
@@ -100,8 +97,8 @@ if fm.fileExists(atPath: "src/agentcore") == false {
 
    let rootDirPath = fm.currentDirectoryPath
    print("Current directory is " + rootDirPath)
-   print("Attempting to move " + PAHO + " to " + SOURCE_DIR + FILE_SEPARATOR + PAHO)
-   _ = try fm.moveItem(atPath: PAHO, toPath: SOURCE_DIR + FILE_SEPARATOR + PAHO)
+   print("Attempting to move " + PAHO_SRC_DIR + " to " + SOURCE_DIR + FILE_SEPARATOR + PAHO)
+   _ = try fm.moveItem(atPath: PAHO_SRC_DIR, toPath: SOURCE_DIR + FILE_SEPARATOR + PAHO)
 
    ///change directory to the src/ directory
    _ = fm.changeCurrentDirectoryPath(SOURCE_DIR)
@@ -144,7 +141,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    /// 3. All non-standard declarations of platform (_Linux, LINUX, _LINUX) need to be standardised to __LINUX__
 
    /// 2. and 3. are the easy ones - let's do them first
-   let encoding:NSStringEncoding = NSUTF8StringEncoding
+   let encoding:String.Encoding = String.Encoding.utf8
    let linuxVariations = ["defined(_Linux)", "defined(LINUX)", "defined(_LINUX)"]
    var fileEnum = fm.enumerator(atPath: srcDirPath)
    while let fn = fileEnum?.nextObject() {
@@ -201,7 +198,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
       print("Working in \(dir), source = \(source), header= \(header)")
       var fileContents = try String(contentsOfFile: source, encoding: encoding)
       fileContents = fileContents.replacingOccurrences(of: "#include.*?"+headerRegex, with:"#include \"\(header)",
-                                                       options: .regularExpressionSearch)
+                                                       options: .regularExpression)
       fileContents = fileContents.replacingOccurrences(of: "#include \""+IBMRAS_DIR, 
                                                        with:"#include \"../"+AGENT_CORE_DIR+"/"+IBMRAS_DIR)
       try fileContents.write(toFile: source, atomically: true, encoding: encoding)
@@ -225,7 +222,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
       if fileName.hasPrefix(IBMRAS_DIR) && (fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h")) {
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
 
-         while let foundRange = fileContents.range(of: "#include [\"<]"+IBMRAS_DIR+".*?[\">]", options: .regularExpressionSearch) {
+         while let foundRange = fileContents.range(of: "#include [\"<]"+IBMRAS_DIR+".*?[\">]", options: .regularExpression) {
             var foundString = fileContents.substring(with: foundRange)
             print(foundString)
             ///get rid of the include part and the final quote
