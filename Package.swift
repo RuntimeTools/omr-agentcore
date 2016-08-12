@@ -103,16 +103,17 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    _ = fm.changeCurrentDirectoryPath(rootDirPath)
    print("Attempting to move " + PAHO_SRC_DIR + " to " + SOURCE_DIR + FILE_SEPARATOR + PAHO)
    _ = try fm.moveItem(atPath: PAHO_SRC_DIR, toPath: SOURCE_DIR + FILE_SEPARATOR + PAHO)
+   
+   /// create the module directories
+   for dir in MODULE_DIR_LIST {
+      _ = try fm.createDirectory(atPath: SOURCE_DIR + FILE_SEPARATOR + dir + FILE_SEPARATOR + "include", 
+                                 withIntermediateDirectories: true)
+   }
 
    ///change directory to the src/ directory
    _ = fm.changeCurrentDirectoryPath(SOURCE_DIR)
    let srcDirPath = fm.currentDirectoryPath
    print("Current directory is " + srcDirPath)
-
-   /// create the module directories
-   for dir in MODULE_DIR_LIST {
-      _ = try fm.createDirectory(atPath: dir+"\include", withIntermediateDirectories: true)
-   }
    
 
    ///move plugin source to plugin directories
