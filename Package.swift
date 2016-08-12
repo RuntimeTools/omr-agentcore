@@ -170,13 +170,15 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    fileEnum = fm.enumerator(atPath: targetWorkingDir)
    while let fn = fileEnum?.nextObject() {
       let fileName = String(fn)
-      var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
-      fileContents = fileContents.replacingOccurrences(of: "#include \"MQTT", 
-                                                       with:"#include \"../"+PAHO+"/"+SOURCE_DIR+"/MQTT")
-      ///we also need to do this with Heap.h
-      fileContents = fileContents.replacingOccurrences(of: "#include \"Heap.h", 
-                                                       with:"#include \"../"+PAHO+"/"+SOURCE_DIR+"/Heap.h")
-      try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
+      if fileName != "include" {
+         var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
+         fileContents = fileContents.replacingOccurrences(of: "#include \"MQTT", 
+                                                          with:"#include \"../"+PAHO+"/"+SOURCE_DIR+"/MQTT")
+         ///we also need to do this with Heap.h
+         fileContents = fileContents.replacingOccurrences(of: "#include \"Heap.h", 
+                                                          with:"#include \"../"+PAHO+"/"+SOURCE_DIR+"/Heap.h")
+         try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
+      }
    }
    
    ///PAHO is now complete. All uncomplete modules (apart from agentcore) now have a single source file and a single header
@@ -192,12 +194,14 @@ if fm.fileExists(atPath: "src/agentcore") == false {
       while let fn = fileEnum?.nextObject() {
          print(fn)
          let fileName = String(fn)
-         if fileName.hasSuffix(".cpp") {
-            source = fileName
-         } else {
-            /// need a \ on the . of .h for the regex to match it
-            headerRegex = fileName.replacingOccurrences(of: ".", with: "\\.")
-            header = fileName
+         if fileName != "include" {
+            if fileName.hasSuffix(".cpp") {
+               source = fileName
+            } else {
+               /// need a \ on the . of .h for the regex to match it
+               headerRegex = fileName.replacingOccurrences(of: ".", with: "\\.")
+               header = fileName
+            }
          }
       }
       print("Working in \(dir), source = \(source), header= \(header)")
