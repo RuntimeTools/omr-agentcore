@@ -558,7 +558,17 @@ bool CpuPlugin::read_process_cpu_time(uint64* proctime, const uint32 NS_PER_HZ) 
 	int32 dummyInt;
 	uint32 dummyUInt;
 	std::string dummyStr;
-	filestream >> dummyInt >> dummyStr >> dummyStr >> dummyInt >> dummyInt;
+	filestream >> dummyInt >> dummyStr;
+
+	// the second parameter in a /proc/<pid>/stat is a possible filename
+        // of the running process. This can pose a problem if the filename
+        // has a space (i.e. (Passenger NodeA)). This checks to read the stream
+        // until the end parenthese is found.
+	while(dummyStr.back() != ')') {
+		filestream >> dummyStr;
+	}
+
+	filestream >> dummyStr >> dummyInt >> dummyInt;
 	filestream >> dummyInt >> dummyInt >> dummyInt >> dummyUInt >> dummyUInt;
 	filestream >> dummyUInt >> dummyUInt >> dummyUInt;
 	filestream >> user >> kernel;
