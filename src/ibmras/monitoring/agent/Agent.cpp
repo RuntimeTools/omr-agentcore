@@ -64,6 +64,7 @@ AGENT_DECL loaderCoreFunctions* loader_entrypoint() {
 	loaderCoreFunctions* lCF = new loaderCoreFunctions;
 
 	lCF->init = initWrapper;
+    lCF->initialize = initWrapper;
 	lCF->start = startWrapper;
 	lCF->stop = stopWrapper;
 	lCF->shutdown = shutdownWrapper;

@@ -17,8 +17,10 @@
 
 #ifndef ibmras_monitoring_monitoring_h
 #define ibmras_monitoring_monitoring_h
-#include <string>
+
+#ifdef __cplusplus
 extern "C"{
+#endif
 
 #ifndef PLUGIN_API_VERSION
 #define PLUGIN_API_VERSION "1.0"
@@ -51,7 +53,11 @@ typedef struct monitordata {
 	unsigned int sourceID;			/* source ID, previously supplied by the source during registration */
 	unsigned int size;				/* amount of data being provided */
 	const char *data;			/* char array of the data to store */
+#ifdef __cplusplus
 	bool persistent;            /* persistent data will not be removed from the bucket */
+#else
+	int persistent;            /* persistent data will not be removed from the bucket */
+#endif
 } monitordata;
 
 typedef monitordata* (*PULL_CALLBACK)(void);			/* shortcut definition for the pull source callback */
@@ -68,12 +74,20 @@ typedef struct srcheader {
 
 typedef struct pushsource {
 	srcheader header;			/* common source header */
+#ifdef __cplusplus
 	pushsource *next;			/* next source or null if this is the last one in the list */
+#else
+	struct pushsource *next;		/* next source or null if this is the last one in the list */
+#endif
 } pushsource;
 
 typedef struct pullsource{
 	srcheader header;			/* common source header */
+#ifdef __cplusplus
 	pullsource *next;			/* the next source or null if this is the last one in the list */
+#else
+	struct pullsource *next;			/* the next source or null if this is the last one in the list */
+#endif
 	unsigned int pullInterval;		/* time in seconds at which data should be pulled from this source */
 	PULL_CALLBACK callback;
 	PULL_CALLBACK_COMPLETE complete;
@@ -95,11 +109,19 @@ enum loggingLevel {
 
 typedef void (*pushData)(monitordata *data);
 typedef int (*sendMessage)(const char * sourceId, unsigned int size,void *data);
+#ifdef __cplusplus
 typedef void (*exposedLogger)(loggingLevel lev, const char * message);
+#else
+typedef void (*exposedLogger)(enum loggingLevel lev, const char * message);
+#endif
 typedef const char * (*agentProperty)(const char * key);
 typedef void (*setAgentProp)(const char* key, const char* value);
 typedef void (*lifeCycle)();
+#ifdef __cplusplus
 typedef bool (*loadPropFunc)(const char* filename);
+#else
+typedef int (*loadPropFunc)(const char* filename);
+#endif
 typedef const char* (*getVer)();
 typedef void (*setLogLvls)();
 
@@ -112,6 +134,7 @@ typedef struct agentCoreFunctions {
 
 typedef struct loaderCoreFunctions {
 	lifeCycle init;
+    lifeCycle initialize;
 	lifeCycle start;
 	lifeCycle stop;
 	lifeCycle shutdown;
@@ -124,12 +147,16 @@ typedef struct loaderCoreFunctions {
 
 } loaderCoreFunctions;
 
+loaderCoreFunctions* loader_entrypoint();
 
 typedef int (*PLUGIN_INITIALIZE)(const char* properties);
 typedef pushsource* (*PUSH_SOURCE_REGISTER)(agentCoreFunctions aCF, unsigned int provID);
 typedef void (*PUSH_CALLBACK)(monitordata* data);
 
+#ifdef __cplusplus
 }
+#endif
+
 #endif /* ibmras_monitoring_monitoring_h */
 
 

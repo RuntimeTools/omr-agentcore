@@ -46,6 +46,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <libproc.h>
+#include <unistd.h> // gethostname()
 #define HOST_NAME_MAX 256
 #endif
 
