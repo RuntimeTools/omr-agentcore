@@ -58,7 +58,7 @@ ibmras::common::util::LibraryUtils::Handle LibraryUtils::openLibrary(const std::
 #if defined(WINDOWS)
 	handle.handle = LoadLibrary(lib.c_str());
 #else
-        handle.handle = dlopen(lib.c_str(), RTLD_LAZY | RTLD_NOLOAD)
+        handle.handle = dlopen(lib.c_str(), RTLD_LAZY | RTLD_NOLOAD);
         if (handle.handle == null) {
 	   handle.handle = dlopen(lib.c_str(), RTLD_LAZY);
         }
