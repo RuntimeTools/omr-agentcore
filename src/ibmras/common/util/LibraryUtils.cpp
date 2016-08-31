@@ -58,10 +58,13 @@ ibmras::common::util::LibraryUtils::Handle LibraryUtils::openLibrary(const std::
 #if defined(WINDOWS)
 	handle.handle = LoadLibrary(lib.c_str());
 #else
-        handle.handle = dlopen(lib.c_str(), RTLD_LAZY | RTLD_NOLOAD);
-        if (handle.handle == NULL) {
-	   handle.handle = dlopen(lib.c_str(), RTLD_LAZY);
+#if defined(__MACH__) || defined(__APPLE__)
+        std::size_t found = lib.rfind(".dylib", lib.size()-".dylib".size());
+        if (found == std::string::npos)) {
+           return Handle();
         }
+#endif
+        handle.handle = dlopen(lib.c_str(), RTLD_LAZY);
 #endif
 	return handle;
 }
