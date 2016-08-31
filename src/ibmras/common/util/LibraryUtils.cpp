@@ -59,7 +59,7 @@ ibmras::common::util::LibraryUtils::Handle LibraryUtils::openLibrary(const std::
 	handle.handle = LoadLibrary(lib.c_str());
 #else
         handle.handle = dlopen(lib.c_str(), RTLD_LAZY | RTLD_NOLOAD);
-        if (handle.handle == null) {
+        if (handle.handle == NULL) {
 	   handle.handle = dlopen(lib.c_str(), RTLD_LAZY);
         }
 #endif
