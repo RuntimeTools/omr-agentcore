@@ -565,7 +565,7 @@ bool CpuPlugin::read_process_cpu_time(uint64* proctime, const uint32 NS_PER_HZ) 
         // has a space (i.e. (Passenger NodeA)). This checks to read the stream
         // until the end parenthese is found.
 	aCF.logMessage(info, dummyStr.append(" = dummyStr").c_str());
-	while(dummyStr[dummyStr.length - 1] != ')') {
+	while(dummyStr[dummyStr.length() - 1] != ')') {
 		filestream >> dummyStr;
 	}
 
