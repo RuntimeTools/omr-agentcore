@@ -564,10 +564,8 @@ bool CpuPlugin::read_process_cpu_time(uint64* proctime, const uint32 NS_PER_HZ) 
         // of the running process. This can pose a problem if the filename
         // has a space (i.e. (Passenger NodeA)). This checks to read the stream
         // until the end parenthese is found.
-	aCF.logMessage(info, "dummyStr = " + dummyStr.c_str());
-	aCF.logMessage(info, "dummyStr.npos - 1 = ".append(dummyStr.npos - 1));
-	aCF.logMessage(info, "dummyStr[dummyStr.npos - 1] = ".append(dummyStr[dummyStr.npos - 1]));
-	while(dummyStr[dummyStr.npos - 1] != ')') {
+	aCF.logMessage(info, dummyStr.append(" = dummyStr").c_str());
+	while(dummyStr[dummyStr.length - 1] != ')') {
 		filestream >> dummyStr;
 	}
 
