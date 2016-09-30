@@ -1,12 +1,7 @@
 import Foundation
 import PackageDescription
 
-#if os(Linux)
-   let fm = FileManager.default()
-#else
-   let fm = FileManager.default
-#endif
-
+let fm = FileManager.default
 
 ///need to drill down into the omr-agentcore directory from where we are
 if fm.currentDirectoryPath.contains("omr-agentcore") == false {
@@ -155,7 +150,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    let linuxVariations = ["defined(_Linux)", "defined(LINUX)", "defined(_LINUX)", "defined (_LINUX)"]
    var fileEnum = fm.enumerator(atPath: srcDirPath)
    while let fn = fileEnum?.nextObject() {
-      let fileName = String(fn)
+      let fileName = String(describing: fn)
       ///only want source files or header files
       if fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h") {
          print(fileName)
@@ -181,7 +176,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    print("Attempting to enumerate " + targetWorkingDir)
    fileEnum = fm.enumerator(atPath: targetWorkingDir)
    while let fn = fileEnum?.nextObject() {
-      let fileName = String(fn)
+      let fileName = String(describing: fn)
       if fileName != "include" {
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
          fileContents = fileContents.replacingOccurrences(of: "#include \"MQTT", 
@@ -205,7 +200,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
       fileEnum = fm.enumerator(atPath: targetWorkingDir)
       while let fn = fileEnum?.nextObject() {
          print(fn)
-         let fileName = String(fn)
+         let fileName = String(describing: fn)
          if fileName != "include" {
             if fileName.hasSuffix(".cpp") {
                source = fileName
@@ -238,7 +233,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    fileEnum = fm.enumerator(atPath: targetWorkingDir)
    while let fn = fileEnum?.nextObject() {
       print(fn)
-      let fileName = String(fn)
+      let fileName = String(describing: fn)
       //ignore the include directory and anything that isn't a header or source file
       if fileName.hasPrefix(IBMRAS_DIR) && (fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h")) {
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
@@ -275,13 +270,13 @@ let package = Package(
       Target(name: "cpuplugin", dependencies: [.Target(name: "agentcore")]),
       Target(name: "envplugin", dependencies: [.Target(name: "agentcore")]),
       Target(name: "memplugin", dependencies: [.Target(name: "agentcore")]),
-      Target(name: "ostreamplugin", dependencies: [.Target(name: "agentcore")]),
       Target(name: "hcapiplugin", dependencies: [.Target(name: "agentcore")])
    ],
    exclude: [ "src/agentcore/ibmras/common/port/aix",
               "src/agentcore/ibmras/common/port/windows",
               "src/agentcore/ibmras/common/data",
               "src/agentcore/ibmras/common/util/memUtils.cpp",
+              "src/ostreamplugin",
               "src/paho/Windows Build",
               "src/paho/build",
               "src/paho/doc",
