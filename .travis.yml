@@ -1,0 +1,14 @@
+language: cpp
+
+branches:
+  only:
+  - makefilebranch
+
+matrix:
+    include:
+        - os: linux
+          env: BUILD=xi32
+        - os: linux
+          env: BUILD=xa64
+
+script: make clean coreinstall
