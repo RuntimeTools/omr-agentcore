@@ -1,9 +1,5 @@
 language: cpp
 
-branches:
-  only:
-  - makefilebranch
-
 matrix:
     include:
         - os: linux
