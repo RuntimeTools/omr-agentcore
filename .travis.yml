@@ -10,5 +10,9 @@ matrix:
           env: BUILD=xi32
         - os: linux
           env: BUILD=xa64
+        - os: osx
+          env: BUILD=darwin
+        - os: osx
+          env: BUILD=darwin64
 
 script: make clean coreinstall
