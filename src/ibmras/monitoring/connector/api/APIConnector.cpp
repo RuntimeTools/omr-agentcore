@@ -16,6 +16,7 @@
 
 #include "ibmras/monitoring/connector/api/APIConnector.h"
 #include "ibmras/common/util/strUtils.h"
+#include "ibmras/common/MemoryManager.h"
 
 #define DEFAULT_CAPACITY 1024000  /* default bucket capacity = 1MB */
 
@@ -35,8 +36,11 @@ APIConnector::APIConnector() {
 void (*listener)(const char*, unsigned int, void*);
 
 int APIConnector::sendMessage(const std::string &sourceId, uint32 size, void *data) {
-	if (listener != NULL)
+	if (listener != NULL) {
+		char* asciiString = ibmras::common::util::createAsciiString(sourceId.c_str());
 		listener(ibmras::common::util::createAsciiString(sourceId.c_str()), size, data);
+		ibmras::common::memory::deallocate((unsigned char**)&asciiString);
+	}
 	return size;
 }
 
@@ -60,7 +64,9 @@ APICONNECTORPLUGIN_DECL void pushData(const char *sendData) {
 }
 
 APICONNECTORPLUGIN_DECL void sendControl(const char* topic, unsigned int length, void* message) {
-	plugin::receiver->receiveMessage(std::string(ibmras::common::util::createNativeString(topic)), length, message);
+	char* nativeString = ibmras::common::util::createNativeString(topic);
+	plugin::receiver->receiveMessage(std::string(nativeString), length, message);
+	ibmras::common::memory::deallocate((unsigned char**)&nativeString);
 }
 
 } // end extern C
