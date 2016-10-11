@@ -38,7 +38,7 @@ void (*listener)(const char*, unsigned int, void*);
 int APIConnector::sendMessage(const std::string &sourceId, uint32 size, void *data) {
 	if (listener != NULL) {
 		char* asciiString = ibmras::common::util::createAsciiString(sourceId.c_str());
-		listener(ibmras::common::util::createAsciiString(sourceId.c_str()), size, data);
+		listener(asciiString, size, data);
 		ibmras::common::memory::deallocate((unsigned char**)&asciiString);
 	}
 	return size;
