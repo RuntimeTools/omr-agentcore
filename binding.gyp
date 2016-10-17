@@ -54,6 +54,9 @@
       ['OS=="mac"', {
         "defines": [ "__MACH__", "__APPLE__",  ],
          "libraries": [ "-undefined dynamic_lookup" ],
+         "xcode_settings": {
+            "OTHER_CPLUSPLUSFLAGS" : [ "-fexceptions" ],
+         },
       }],
       ['OS=="linux"', {
         "defines": [ "_LINUX", "LINUX" ],
