@@ -53,28 +53,23 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    ///Public header file names
    let AGENT_EXTENSIONS = "AgentExtensions.h"
 
-   ///moveSource function - moves the original source from it's ibmras structure into its new swift module
+   ///moveSource function - moves the original source from its ibmras structure into its new swift module
    func moveSource(rootDir: String, pluginSrcDir: String, pluginTargetDir: String) throws {
 
       ///move plugin source to plugin directories - need to call this from rootDir
       _ = fm.changeCurrentDirectoryPath(rootDir)
       _ = fm.changeCurrentDirectoryPath(pluginSrcDir)
-      print("Current directory is " + fm.currentDirectoryPath)
       let dirContents = try fm.contentsOfDirectory(atPath: fm.currentDirectoryPath)
       for file in dirContents {
          let targetDir = rootDir + FILE_SEPARATOR + pluginTargetDir
-         print("Attempting to move " + file + " to " + targetDir + FILE_SEPARATOR + file)
          _ = try fm.moveItem(atPath:file, toPath: targetDir + FILE_SEPARATOR + file)
       }
    }
    
    //relativePath function - given two filepaths under a common root, determine a relative path from the source to the target
    func relativePath(sourceFilePath: String, targetFilePath: String) -> String {
-      print("In relativePath, source = \(sourceFilePath), target = \(targetFilePath)")
       var sourcePath = sourceFilePath.components(separatedBy: FILE_SEPARATOR)
       var targetPath = targetFilePath.components(separatedBy: "/")
-      print(sourcePath)
-      print(targetPath)
       ///Remove the last elements of the paths (the file names)
       ///retain the last element of targetPath for reinsertion later
       let targetFile = targetPath.removeLast()
@@ -91,17 +86,14 @@ if fm.fileExists(atPath: "src/agentcore") == false {
       for dir in targetPath {
          targetFilePath += "\(dir)/"
       }
-      print("returning \(targetFilePath)\(targetFile)")
       return targetFilePath + targetFile
    }
 
    let rootDirPath = fm.currentDirectoryPath
-   print("Current directory is " + rootDirPath)
-   //sort out Paho
+   //restructure Paho
    _ = fm.changeCurrentDirectoryPath(PAHO_SRC_DIR)
    _ = try fm.createDirectory(atPath: "include", withIntermediateDirectories: false)
    _ = fm.changeCurrentDirectoryPath(rootDirPath)
-   print("Attempting to move " + PAHO_SRC_DIR + " to " + SOURCE_DIR + FILE_SEPARATOR + PAHO)
    _ = try fm.moveItem(atPath: PAHO_SRC_DIR, toPath: SOURCE_DIR + FILE_SEPARATOR + PAHO)
    
    /// create the module directories
@@ -113,9 +105,7 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    ///change directory to the src/ directory
    _ = fm.changeCurrentDirectoryPath(SOURCE_DIR)
    let srcDirPath = fm.currentDirectoryPath
-   print("Current directory is " + srcDirPath)
    
-
    ///move plugin source to plugin directories
    try moveSource(rootDir: srcDirPath, pluginSrcDir: CPU_PLUGIN_SRC_DIR, pluginTargetDir: CPU_PLUGIN_DIR)
    try moveSource(rootDir: srcDirPath, pluginSrcDir: ENV_PLUGIN_SRC_DIR, pluginTargetDir: ENV_PLUGIN_DIR)
@@ -153,7 +143,6 @@ if fm.fileExists(atPath: "src/agentcore") == false {
       let fileName = String(describing: fn)
       ///only want source files or header files
       if fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h") {
-         print(fileName)
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
          fileContents = fileContents.replacingOccurrences(of:MONITOR_SRC_DIR + AGENT_EXTENSIONS, with:AGENT_EXTENSIONS)
          for variation in linuxVariations {
@@ -161,9 +150,8 @@ if fm.fileExists(atPath: "src/agentcore") == false {
          }
          try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
       }
-      ///AAARGH HACK HACK HACK
+      ///Workaround for having a method name that is already used by macOS
       if fileName.hasSuffix("Heap.c") {
-         print("HACK Heap.c hack it to death and back I tells ya")
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
          fileContents = fileContents.replacingOccurrences(of: "roundup", with: "roundup_")
          try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
@@ -173,7 +161,6 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    //MQTT headers are required by the mqttplugin's files
    var targetWorkingDir = srcDirPath + FILE_SEPARATOR + MQTT_PLUGIN_DIR
    _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
-   print("Attempting to enumerate " + targetWorkingDir)
    fileEnum = fm.enumerator(atPath: targetWorkingDir)
    while let fn = fileEnum?.nextObject() {
       let fileName = String(describing: fn)
@@ -196,7 +183,6 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    for dir in workingModules {
       let targetWorkingDir = srcDirPath + FILE_SEPARATOR + dir
       _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
-      print("Attempting to enumerate " + targetWorkingDir)
       fileEnum = fm.enumerator(atPath: targetWorkingDir)
       while let fn = fileEnum?.nextObject() {
          print(fn)
@@ -229,31 +215,23 @@ if fm.fileExists(atPath: "src/agentcore") == false {
    //finally, we alter agentcore's headers to become relative.
    targetWorkingDir = srcDirPath + FILE_SEPARATOR + AGENT_CORE_DIR
    _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
-   print("Attempting to enumerate " + targetWorkingDir)
    fileEnum = fm.enumerator(atPath: targetWorkingDir)
    while let fn = fileEnum?.nextObject() {
-      print(fn)
       let fileName = String(describing: fn)
       //ignore the include directory and anything that isn't a header or source file
       if fileName.hasPrefix(IBMRAS_DIR) && (fileName.hasSuffix(".cpp") || fileName.hasSuffix(".h")) {
          var fileContents = try String(contentsOfFile: fileName, encoding: encoding)
-
          while let foundRange = fileContents.range(of: "#include [\"<]"+IBMRAS_DIR+".*?[\">]", options: .regularExpression) {
             var foundString = fileContents.substring(with: foundRange)
-            print(foundString)
             ///get rid of the include part and the final quote
             foundString = foundString.substring(from: foundString.index(foundString.startIndex, offsetBy: 10))
             foundString = foundString.substring(to: foundString.index(foundString.endIndex, offsetBy: -1))
-            print(foundString)
             ///replace with the new concocted string
             fileContents.replaceSubrange(foundRange, with: "#include \"\(relativePath(sourceFilePath: fileName, targetFilePath: foundString))\"")
          }
-
-                                                          ///with:"#include \"\(relativePath(fileName, $1))\"",
          try fileContents.write(toFile: fileName, atomically: true, encoding: encoding)
       }
-   }
-   
+   }  
 }
 
 #if os(Linux)
