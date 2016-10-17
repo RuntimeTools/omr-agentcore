@@ -17,10 +17,11 @@ This project uses a semver-parsable X.0.Z version number for releases, where X i
 Non-release versions of this project (for example on github.com/RuntimeTools/omr-agentcore) will use semver-parsable X.0.Z-dev.B version numbers, where X.0.Z is the last release with Z incremented and B is an integer. For further information on the development process go to the  [appmetrics wiki][3]: [Developing](https://github.com/RuntimeTools/appmetrics/wiki/Developing).
 
 ## Version
-3.0.9
+3.0.10
 
 ## Release History
-`1.0.0` - First release.
+`3.0.10` - Various bug fixes and makefile changes.  
+`3.0.9` - First release.
 
 [1]:https://github.com/RuntimeTools/omr-agentcore
 [2]:https://github.com/RuntimeTools/omr-agentcore/wiki
