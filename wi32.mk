@@ -1,4 +1,5 @@
 #include makefile for Windows
+SHELL=C:/Windows/System32/cmd.exe
 PLATFORM=_WINDOWS
 OS=Windows
 PORTDIR=windows
