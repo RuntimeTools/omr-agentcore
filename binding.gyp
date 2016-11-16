@@ -145,15 +145,8 @@
         "<(pahosrcdir)/Tree.c",
         "<(pahosrcdir)/utf-8.c",
         "<(srcdir)/monitoring/connector/mqtt/MQTTConnector.cpp",
-        "<(srcdir)/common/Logger.cpp",
-        "<(srcdir)/common/LogManager.cpp",
-        "<(srcdir)/common/port/<(portdir)/Process.cpp",
-        "<(srcdir)/common/port/Lock.cpp",
-        "<(srcdir)/common/Properties.cpp",
-        "<(srcdir)/common/util/strUtils.cpp",
-        "<(srcdir)/common/util/sysUtils.cpp",
-        "<(srcdir)/common/MemoryManager.cpp",
       ],
+      "dependencies": [ "agentcore" ],
       "conditions": [
         [ 'node_byteorder=="big"', {
           "defines": [ "REVERSED" ], 
@@ -198,13 +191,17 @@
       "target_name": "hcapiplugin",
       "type": "shared_library",
       "sources": [
-        "<(srcdir)/common/port/Lock.cpp",
-        "<(srcdir)/common/LogManager.cpp",
-        "<(srcdir)/common/Logger.cpp",
-        "<(srcdir)/common/util/strUtils.cpp",
-        "<(srcdir)/common/MemoryManager.cpp",
         "<(srcdir)/monitoring/connector/api/APIConnector.cpp",
       ],
+      "dependencies": [ "agentcore" ],
+    },
+    {
+      "target_name": "headlessplugin",
+      "type": "shared_library",
+      "sources": [
+        "<(srcdir)/monitoring/connector/headless/HLConnector.cpp",
+      ],
+      "dependencies": [ "agentcore" ],
     },
     {
       "target_name": "external",
@@ -216,6 +213,7 @@
         "cpuplugin",
         "envplugin",
         "memoryplugin",
+        "headlessplugin",
       ],
       "copies": [
         {
@@ -231,7 +229,8 @@
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)cpuplugin<(SHARED_LIB_SUFFIX)",
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)envplugin<(SHARED_LIB_SUFFIX)",
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)memoryplugin<(SHARED_LIB_SUFFIX)",
-            "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)hcapiplugin<(SHARED_LIB_SUFFIX)",            
+            "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)hcapiplugin<(SHARED_LIB_SUFFIX)",
+            "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)headlessplugin<(SHARED_LIB_SUFFIX)",
           ],
         },
       ],

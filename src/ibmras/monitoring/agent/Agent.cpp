@@ -64,7 +64,7 @@ AGENT_DECL loaderCoreFunctions* loader_entrypoint() {
 	loaderCoreFunctions* lCF = new loaderCoreFunctions;
 
 	lCF->init = initWrapper;
-    lCF->initialize = initWrapper;
+	lCF->initialize = initWrapper;
 	lCF->start = startWrapper;
 	lCF->stop = stopWrapper;
 	lCF->shutdown = shutdownWrapper;
@@ -74,6 +74,7 @@ AGENT_DECL loaderCoreFunctions* loader_entrypoint() {
 	lCF->loadPropertiesFile = loadPropertiesFileWrapper;
 	lCF->getAgentVersion = getVersionWrapper;
 	lCF->setLogLevels = setLogLevelsWrapper;
+	lCF->registerZipFunction = registerZipFunctionWrapper;
 
 	return lCF;
 }
@@ -141,6 +142,13 @@ void logCoreMessageWrapper(loggingLevel lev, const char * message){
 
 bool loadPropertiesFileWrapper(const char* fileName) {
 	return ibmras::monitoring::agent::Agent::getInstance()->loadPropertiesFile(fileName);
+}
+
+
+using zipFnType = void(*)(const char*);
+
+void registerZipFunctionWrapper(zipFnType zipFunc) {
+	return ibmras::monitoring::agent::Agent::getInstance()->registerZipFunction(zipFunc);
 }
 
 } // extern "C"
@@ -446,9 +454,17 @@ void Agent::removeConnector(ibmras::monitoring::connector::Connector* con) {
 	connectionManager.removeConnector(con);
 }
 
+void Agent::registerZipFunction(zipFnType zipFunc) {
+	zipFunction = zipFunc;
+}
 
-
-
+void Agent::zipHeadlessFiles(const char* dir) {
+	if (zipFunction == NULL) {
+		IBMRAS_LOG(warning, "Zip called for by headless plugin, but no zip function set on Agent.");
+	} else {
+		zipFunction(dir);
+	}
+}
 
 void Agent::init() {
 	IBMRAS_DEBUG(info, "Agent initialisation : start");
