@@ -94,10 +94,11 @@ MQTTConnector::MQTTConnector(const std::string &host, const std::string &port,
 	agentTopic = agentTopicStream.str();
 
 	std::stringstream agentIdMessageStream;
-	std::string applicationIdentifier = applicationId;
-	if (applicationId.length() == 0) {
-		applicationIdentifier = ibmras::common::port::getHostName() + ":";
-		applicationIdentifier += ibmras::common::itoa(processId);
+	std::string applicationIdentifier;
+	applicationIdentifier = ibmras::common::port::getHostName() + ":";
+	applicationIdentifier += ibmras::common::itoa(processId);
+	if (applicationId.length() > 0) {
+		applicationIdentifier += ":" + applicationId;
 	}
 	agentIdMessageStream << rootTopic << "\n" << applicationIdentifier;
 	agentIdMessage = agentIdMessageStream.str();
