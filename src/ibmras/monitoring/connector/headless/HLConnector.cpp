@@ -481,7 +481,6 @@ int HLConnector::sendMessage(const std::string &sourceId, uint32 size,
 			if (currentSource->is_open()) {
 				IBMRAS_DEBUG_1(debug, "Write: %s", cdata);
 				currentSource->write(cdata, size);
-				currentSource->flush();
 			}
 
 			lock->release();
