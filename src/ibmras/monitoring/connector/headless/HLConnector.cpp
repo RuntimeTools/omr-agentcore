@@ -174,7 +174,6 @@ int HLConnector::start() {
 	}
 
 	running = true;
-	filesInitialized = false;
 
 	ibmras::common::port::ThreadData* data =
 			new ibmras::common::port::ThreadData(thread);
@@ -248,6 +247,7 @@ void HLConnector::startNewTempDir() {
 			it != sourceIDs.end(); ++it) {
 		createFile(*it);
 	}
+	filesInitialized = false;
 }
 
 void HLConnector::createFile(const std::string &fileName) {
