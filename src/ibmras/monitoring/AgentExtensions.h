@@ -124,8 +124,7 @@ typedef int (*loadPropFunc)(const char* filename);
 #endif
 typedef const char* (*getVer)();
 typedef void (*setLogLvls)();
-using zipFnType = void(*)(const char*);
-typedef void (*registerZipFn)(zipFnType);
+typedef void (*registerZipFn)(void(*)(const char*));
 
 typedef struct agentCoreFunctions {
 	pushData agentPushData;
