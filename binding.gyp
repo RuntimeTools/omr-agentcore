@@ -196,6 +196,14 @@
       "dependencies": [ "agentcore" ],
     },
     {
+      "target_name": "headlessplugin",
+      "type": "shared_library",
+      "sources": [
+        "<(srcdir)/monitoring/connector/headless/HLConnector.cpp",
+      ],
+      "dependencies": [ "agentcore" ],
+    },
+    {
       "target_name": "external",
       "type": "none",
       "dependencies": [
@@ -205,6 +213,7 @@
         "cpuplugin",
         "envplugin",
         "memoryplugin",
+        "headlessplugin",
       ],
       "copies": [
         {
@@ -220,7 +229,8 @@
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)cpuplugin<(SHARED_LIB_SUFFIX)",
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)envplugin<(SHARED_LIB_SUFFIX)",
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)memoryplugin<(SHARED_LIB_SUFFIX)",
-            "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)hcapiplugin<(SHARED_LIB_SUFFIX)",            
+            "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)hcapiplugin<(SHARED_LIB_SUFFIX)",
+            "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)headlessplugin<(SHARED_LIB_SUFFIX)",
           ],
         },
       ],

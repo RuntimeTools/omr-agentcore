@@ -95,8 +95,12 @@ void SystemReceiver::receiveMessage(const std::string &id, uint32 size,
 		topic += "/history/";
 		agent->republish(topic);
 	} else if (id == "headless") {
-		// force immediate update for pull sources
-		agent->immediateUpdate();
+		if(size == 0 || data == NULL) {
+			// force immediate update for pull sources
+			agent->immediateUpdate();
+		} else {
+			agent->zipHeadlessFiles((const char*)data);
+		}
 	}
 }
 

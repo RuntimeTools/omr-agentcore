@@ -49,6 +49,7 @@ void logCoreMessageWrapper(loggingLevel lev, const char * message);
 void setPropertyWrapper(const char* key, const char* value);
 const char* getPropertyWrapper(const char* key);
 bool loadPropertiesFileWrapper(const char* fileName);
+void registerZipFunctionWrapper(void(*zF)(const char*));
 
 }
 
@@ -110,6 +111,9 @@ public:
 		
 	std::string getConfig(const std::string& name);
 	bool readOnly();
+	void registerZipFunction(void(*zipFn)(const char*));
+	void zipHeadlessFiles(const char* dir);
+
 	Agent();					/* public constructor */
 
 private:
@@ -131,6 +135,7 @@ private:
 	//static Agent* instance;		/* singleton instance */
 	ibmras::common::Properties properties;
 	ibmras::monitoring::connector::ConfigurationConnector configConn;
+	void(*zipFunction)(const char*);
 
 };
 }

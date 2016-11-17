@@ -124,6 +124,7 @@ typedef int (*loadPropFunc)(const char* filename);
 #endif
 typedef const char* (*getVer)();
 typedef void (*setLogLvls)();
+typedef void (*registerZipFn)(void(*)(const char*));
 
 typedef struct agentCoreFunctions {
 	pushData agentPushData;
@@ -134,7 +135,7 @@ typedef struct agentCoreFunctions {
 
 typedef struct loaderCoreFunctions {
 	lifeCycle init;
-    lifeCycle initialize;
+	lifeCycle initialize;
 	lifeCycle start;
 	lifeCycle stop;
 	lifeCycle shutdown;
@@ -142,8 +143,9 @@ typedef struct loaderCoreFunctions {
 	agentProperty getProperty;
 	setAgentProp setProperty;
 	loadPropFunc loadPropertiesFile;
-    getVer getAgentVersion;
-    setLogLvls setLogLevels; 
+	getVer getAgentVersion;
+	setLogLvls setLogLevels;
+	registerZipFn registerZipFunction;
 
 } loaderCoreFunctions;
 
