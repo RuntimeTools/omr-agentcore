@@ -144,10 +144,7 @@ bool loadPropertiesFileWrapper(const char* fileName) {
 	return ibmras::monitoring::agent::Agent::getInstance()->loadPropertiesFile(fileName);
 }
 
-
-using zipFnType = void(*)(const char*);
-
-void registerZipFunctionWrapper(zipFnType zipFunc) {
+void registerZipFunctionWrapper(void(*zipFunc)(const char*)) {
 	return ibmras::monitoring::agent::Agent::getInstance()->registerZipFunction(zipFunc);
 }
 
@@ -454,7 +451,7 @@ void Agent::removeConnector(ibmras::monitoring::connector::Connector* con) {
 	connectionManager.removeConnector(con);
 }
 
-void Agent::registerZipFunction(zipFnType zipFunc) {
+void Agent::registerZipFunction(void(*zipFunc)(const char*)) {
 	zipFunction = zipFunc;
 }
 

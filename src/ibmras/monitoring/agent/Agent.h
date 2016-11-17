@@ -49,8 +49,7 @@ void logCoreMessageWrapper(loggingLevel lev, const char * message);
 void setPropertyWrapper(const char* key, const char* value);
 const char* getPropertyWrapper(const char* key);
 bool loadPropertiesFileWrapper(const char* fileName);
-using zipFnType = void(*)(const char*);
-void registerZipFunctionWrapper(zipFnType zf);
+void registerZipFunctionWrapper(void(*zF)(const char*));
 
 }
 
@@ -60,7 +59,6 @@ namespace agent {
 
 void setPropertyImpl(const char* key, const char* value);
 const char* getPropertyImpl(const char* key);
-using zipFnType = void(*)(const char*);
 
 class DECL Agent{
 public:
@@ -137,7 +135,7 @@ private:
 	//static Agent* instance;		/* singleton instance */
 	ibmras::common::Properties properties;
 	ibmras::monitoring::connector::ConfigurationConnector configConn;
-	zipFnType zipFunction;
+	void(*zipFunction)(const char*);
 
 };
 }
