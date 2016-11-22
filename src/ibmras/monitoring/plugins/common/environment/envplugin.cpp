@@ -520,7 +520,7 @@ const std::string EnvPlugin::GetWindowsMajorVersion() {
 				switch (versionInfo.dwMinorVersion) {
 				case 0: return "Windows Server 2008";
 				case 1: return "Windows Server 2008 R2";
-				case 2: return "Windows Server 8";
+				case 2: return "Windows Server 2012";
 				default: return defaultVersion;
 				}
 			}
