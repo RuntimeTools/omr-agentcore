@@ -635,27 +635,29 @@ void Agent::startConnectors() {
 }
 
 void Agent::stop() {
-	IBMRAS_DEBUG(info, "Agent stop : begin");
-	running = false;
-	IBMRAS_DEBUG(fine, "Waiting for active threads to stop");
+	if(running) {
+		IBMRAS_DEBUG(info, "Agent stop : begin");
+		running = false;
+		IBMRAS_DEBUG(fine, "Waiting for active threads to stop");
 #if defined(_WINDOWS) || defined(_ZOS)
-	while (activeThreadCount) {
-		ibmras::common::port::sleep(1);
-		IBMRAS_DEBUG_1(debug, "Checking thread count - current [%d]",
-				activeThreadCount);
-	}
+		while (activeThreadCount) {
+			ibmras::common::port::sleep(1);
+			IBMRAS_DEBUG_1(debug, "Checking thread count - current [%d]",
+					activeThreadCount);
+		}
 #else
-	ibmras::common::port::stopAllThreads();
+		ibmras::common::port::stopAllThreads();
 #endif
 
-	IBMRAS_DEBUG(fine, "All active threads now quit");
+		IBMRAS_DEBUG(fine, "All active threads now quit");
 
 
-	stopPlugins();
-	connectionManager.stop();
-	connectionManager.removeAllReceivers();
+		stopPlugins();
+		connectionManager.stop();
+		connectionManager.removeAllReceivers();
 
-	IBMRAS_DEBUG(info, "Agent stop : finish");
+		IBMRAS_DEBUG(info, "Agent stop : finish");
+	}
 }
 
 void Agent::shutdown() {
