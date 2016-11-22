@@ -20,7 +20,7 @@ Non-release versions of this project (for example on github.com/RuntimeTools/omr
 3.1.0
 
 ## Release History
-`3.1.0` - Headless file creation added and bug fixes.
+`3.1.0` - Headless file creation added and bug fixes.  
 `3.0.10` - Various bug fixes and makefile changes.  
 `3.0.9` - First release.
 
