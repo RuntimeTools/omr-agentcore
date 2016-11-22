@@ -22,6 +22,7 @@
  */
 
 #include "ibmras/monitoring/Typesdef.h"
+#include "ibmras/monitoring/AgentExtensions.h"
 
 namespace ibmras {
 namespace common {
@@ -46,8 +47,8 @@ namespace memory {
 MemoryManager* getDefaultMemoryManager();
 bool setDefaultMemoryManager(MemoryManager* manager);
 
-unsigned char* allocate(uint32 size);
-void deallocate(unsigned char**);
+DECL unsigned char* allocate(uint32 size);
+DECL void deallocate(unsigned char**);
 
 }
 
