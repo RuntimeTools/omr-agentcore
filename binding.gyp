@@ -49,7 +49,7 @@
     "conditions": [
       ['OS=="aix"', {
         "defines": [ "_AIX", "AIX" ],
-        "libraries": [ "-Wl,-bexpall,-brtllib,-G,-bernotok,-brtl" ],
+        "libraries": [ "-Wl,-bexpall,-brtllib,-G,-bernotok,-brtl,-L.,-bnoipath" ],
       }],
       ['OS=="mac"', {
         "defines": [ "__MACH__", "__APPLE__",  ],
