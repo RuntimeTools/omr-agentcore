@@ -43,7 +43,11 @@ const char* LIBSUFFIX = ".dll";
 #define AGENT_DECL
 const char PATHSEPARATOR = '/';
 const char* LIBPREFIX = "lib";
+#if defined(AIX)
+const char* LIBSUFFIX = ".a";
+#else
 const char* LIBSUFFIX = ".so";
+#endif
 #endif
 
 
