@@ -117,6 +117,7 @@ int HLConnector::start() {
 
 	std::string delay = agent->getAgentProperty("headless.delay.start");
 	if (delay.length()) {
+		collect = false;
 		startDelay = atoi(delay.c_str());
 	}
 
