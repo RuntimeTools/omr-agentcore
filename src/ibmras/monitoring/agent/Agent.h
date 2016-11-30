@@ -50,6 +50,7 @@ void setPropertyWrapper(const char* key, const char* value);
 const char* getPropertyWrapper(const char* key);
 bool loadPropertiesFileWrapper(const char* fileName);
 void registerZipFunctionWrapper(void(*zF)(const char*));
+void addPluginWrapper(const char*);
 
 }
 
@@ -95,6 +96,7 @@ public:
 	void setLocalLog(bool local);
 	void addPlugin(ibmras::monitoring::Plugin* plugin);	/* manually add a plugin to the agent */
 	void addPlugin(const std::string &dir, const std::string library);	/* manually add a plugin to the agent */
+    void addPlugin(const char* completeLibraryPath);	/* manually add a plugin to the agent */
 
 	ibmras::common::Properties getProperties();
 	void setProperties(const ibmras::common::Properties &props);
