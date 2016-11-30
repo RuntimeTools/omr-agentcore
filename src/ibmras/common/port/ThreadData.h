@@ -33,7 +33,7 @@ class ThreadData;											/* forward declaration of ThreadData class */
 typedef void* (*THREAD_CALLBACK)(ThreadData*);				/* shortcut definition for the thread  callback */
 
 /* provides the encapsulation of different thread semantics for each platform */
-class ThreadData {
+class DECL ThreadData {
 public:
 	ThreadData(THREAD_CALLBACK callback);
 	ThreadData(THREAD_CALLBACK callback, THREAD_CALLBACK stopMethod);
@@ -51,9 +51,10 @@ private:
 	void* args;
 };
 
-uintptr_t createThread(ThreadData *data);				/* create a thread and start it with specified callback and args */
+
+DECL uintptr_t createThread(ThreadData *data);				/* create a thread and start it with specified callback and args */
 void exitThread(void *val);								/* exit current thread with an optional return value */
-void sleep(uint32 seconds);								/* sleep the current thread */
+DECL void sleep(uint32 seconds);								/* sleep the current thread */
 void stopAllThreads();									/* Stops all threads */
 
 }

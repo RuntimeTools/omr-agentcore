@@ -43,7 +43,11 @@ const char* LIBSUFFIX = ".dll";
 #define AGENT_DECL
 const char PATHSEPARATOR = '/';
 const char* LIBPREFIX = "lib";
+#if defined(AIX)
+const char* LIBSUFFIX = ".a";
+#else
 const char* LIBSUFFIX = ".so";
+#endif
 #endif
 
 
@@ -183,7 +187,7 @@ std::string Agent::getBuildDate() {
 }
 
 std::string Agent::getVersion() {
-	return "3.0.10";
+	return "3.1.0";
 }
 
 void Agent::setLogLevels() {

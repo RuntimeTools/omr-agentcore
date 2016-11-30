@@ -5,7 +5,7 @@
 #    "externalbinariesdir%": "<(PRODUCT_DIR)/deploy/external/binaries",
     "externalbinariesdir%": "./plugins",
     'build_id%': '.<!(["python", "./generate_build_id.py"])',
-    'coreversion%': '3.0.10',
+    'coreversion%': '3.1.0',
   },
   "conditions": [
     ['OS=="aix"', {
@@ -49,7 +49,7 @@
     "conditions": [
       ['OS=="aix"', {
         "defines": [ "_AIX", "AIX" ],
-        "libraries": [ "-Wl,-bexpall,-brtllib,-G,-bernotok,-brtl" ],
+        "libraries": [ "-Wl,-bexpall,-brtllib,-G,-bernotok,-brtl,-L.,-bnoipath" ],
       }],
       ['OS=="mac"', {
         "defines": [ "__MACH__", "__APPLE__",  ],
