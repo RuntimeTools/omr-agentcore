@@ -185,7 +185,6 @@ if fm.fileExists(atPath: "src/agentcore") == false {
       _ = fm.changeCurrentDirectoryPath(targetWorkingDir)
       fileEnum = fm.enumerator(atPath: targetWorkingDir)
       while let fn = fileEnum?.nextObject() {
-         print(fn)
          let fileName = String(describing: fn)
          if fileName != "include" {
             if fileName.hasSuffix(".cpp") {
@@ -197,7 +196,6 @@ if fm.fileExists(atPath: "src/agentcore") == false {
             }
          }
       }
-      print("Working in \(dir), source = \(source), header= \(header)")
       var fileContents = try String(contentsOfFile: source, encoding: encoding)
       fileContents = fileContents.replacingOccurrences(of: "#include.*?"+headerRegex, with:"#include \"\(header)",
                                                        options: .regularExpression)
