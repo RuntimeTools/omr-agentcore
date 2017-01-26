@@ -170,9 +170,11 @@ agentCoreFunctions CpuPlugin::aCF;
 			AppendCPUTime(contentss);
 
 			std::string content = contentss.str();
+			std::cout << "CPU =" << content << "\n";
 			data->size = static_cast<uint32>(content.length()); // should data->size be a size_t?
 			data->data = NewCString(content);
 		} else {
+			std::cout << "CPU data not valid\n";
 			if (!IsValidData(instance->current)) {
 				aCF.logMessage(debug, "[cpu_os] Skipped sending data (reason: invalid data)");
 				if (noFailures) {
@@ -328,7 +330,7 @@ struct CPUTime* CpuPlugin::getCPUTime() {
 	sprintf(psid.name, "%d", getpid());
 	if (perfstat_process(&psid, &pstats, sizeof(perfstat_process_t), 1) == -1) {
 		std::stringstream ss;
-		ss << "[cpu_os] Failed to read process CPU (errno=" << errno << ")";
+		ss << "[cpu_os] Failed to read process CPU (errkno=" << errno << ")";
 		aCF.logMessage(debug, ss.str().c_str());
 
 		delete cputime;
@@ -361,6 +363,8 @@ struct CPUTime* CpuPlugin::getCPUTime() {
 		}
 
 		nsEnd = time_microseconds() * 1000;
+		
+		std::cout << "Number of processors=" << get_nprocs() << "\n";
 
 		cputime->nprocs = get_nprocs();
 		cputime->total /= cputime->nprocs;
@@ -397,6 +401,7 @@ struct CPUTime* CpuPlugin::getCPUTime() {
 		size_t len = sizeof(phys);
 		struct CPUTime* cputime = new CPUTime;
 		int err = sysctlbyname("hw.physicalcpu", &phys, &len, NULL, 0);
+		cout::std << "Number of processors="<< phys<<"\n";
 		if(!err){
 			cputime->nprocs = phys;
 		} else {
