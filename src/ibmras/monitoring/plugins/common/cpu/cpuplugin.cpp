@@ -409,12 +409,12 @@ struct CPUTime* CpuPlugin::getCPUTime() {
 		struct rusage usage;
 		nsStart = time_microseconds() * 1000;
 		err = getrusage(RUSAGE_SELF, &usage);
+		nsEnd = time_microseconds() * 1000;
 		if(!err) {
 			cputime->process = (usage.ru_utime.tv_sec*1000000 + usage.ru_utime.tv_usec + usage.ru_stime.tv_sec*1000000 + usage.ru_stime.tv_usec)*1000/cputime->nprocs;
 			cputime->total = 0;//TODO implement total cpu time (the API used by the top command is subject to change and would require testing on more than one platform, eg, not only 10.9.5)
 			cputime->time = nsStart + ((nsEnd - nsStart) / 2);
 		}
-		nsEnd = time_microseconds() * 1000;
 
 		return cputime;
 #else
