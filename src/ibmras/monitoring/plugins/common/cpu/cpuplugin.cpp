@@ -173,7 +173,6 @@ agentCoreFunctions CpuPlugin::aCF;
 			data->size = static_cast<uint32>(content.length()); // should data->size be a size_t?
 			data->data = NewCString(content);
 		} else {
-			std::cout << "CPU data not valid\n";
 			if (!IsValidData(instance->current)) {
 				aCF.logMessage(debug, "[cpu_os] Skipped sending data (reason: invalid data)");
 				if (noFailures) {
