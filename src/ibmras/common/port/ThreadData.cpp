@@ -31,7 +31,7 @@ namespace port {
 
 ThreadData::ThreadData(THREAD_CALLBACK callback) {
 	this->callback = callback;
-	handle = NULL;
+	handle = (static_cast<unsigned int>(NULL));
 	args = NULL;
 	hasstopmethod = false;
 }
@@ -40,7 +40,7 @@ ThreadData::ThreadData(THREAD_CALLBACK callback) {
 ThreadData::ThreadData(THREAD_CALLBACK callback, THREAD_CALLBACK stopMethod) {
 	this->callback = callback;
 	this->stopmethod = stopMethod;
-	handle = NULL;
+	handle = (static_cast<unsigned int>(NULL));
 	args = NULL;
 	hasstopmethod = true;
 }
