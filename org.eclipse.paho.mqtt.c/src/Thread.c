@@ -229,8 +229,7 @@ sem_type Thread_create_sem()
     		}
     	}
 	#else
-        #if defined(__MACH__) || defined(__APPLE__)
-        #else
+        #if !defined(__MACH__) && !defined(__APPLE__)
 		    sem = malloc(sizeof(sem_t));
             rc = sem_init(sem, 0, 0);
         #endif
@@ -300,8 +299,7 @@ int Thread_check_sem(sem_type sem)
 	return WaitForSingleObject(sem, 0) == WAIT_OBJECT_0;
 #else
     int semval = -1;
-    #if defined(__MACH__) || defined(__APPLE__)
-    #else
+    #if !defined(__MACH__) && !defined(__APPLE__)
 	    sem_getvalue(sem, &semval);
     #endif
 	return semval > 0;
@@ -357,8 +355,7 @@ int Thread_destroy_sem(sem_type sem)
     	}
     	named_semaphore_count--;
 	#else
-        #if defined(__MACH__) || defined(__APPLE__)
-        #else
+        #if !defined(__MACH__) && !defined(__APPLE__)
 		    rc = sem_destroy(sem);
 		    free(sem);
         #endif
