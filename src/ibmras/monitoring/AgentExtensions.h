@@ -125,6 +125,7 @@ typedef int (*loadPropFunc)(const char* filename);
 typedef const char* (*getVer)();
 typedef void (*setLogLvls)();
 typedef void (*registerZipFn)(void(*)(const char*));
+typedef void (*addPlgn)(const char*);
 
 typedef struct agentCoreFunctions {
 	pushData agentPushData;
@@ -146,6 +147,7 @@ typedef struct loaderCoreFunctions {
 	getVer getAgentVersion;
 	setLogLvls setLogLevels;
 	registerZipFn registerZipFunction;
+    addPlgn addPlugin;
 
 } loaderCoreFunctions;
 

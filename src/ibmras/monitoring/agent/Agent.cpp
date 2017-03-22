@@ -79,6 +79,7 @@ AGENT_DECL loaderCoreFunctions* loader_entrypoint() {
 	lCF->getAgentVersion = getVersionWrapper;
 	lCF->setLogLevels = setLogLevelsWrapper;
 	lCF->registerZipFunction = registerZipFunctionWrapper;
+    lCF->addPlugin = addPluginWrapper;
 
 	return lCF;
 }
@@ -150,6 +151,10 @@ bool loadPropertiesFileWrapper(const char* fileName) {
 
 void registerZipFunctionWrapper(void(*zipFunc)(const char*)) {
 	return ibmras::monitoring::agent::Agent::getInstance()->registerZipFunction(zipFunc);
+}
+
+void addPluginWrapper(const char* completeLibraryPath) {
+	return ibmras::monitoring::agent::Agent::getInstance()->addPlugin(completeLibraryPath);
 }
 
 } // extern "C"
@@ -435,6 +440,14 @@ void Agent::addPlugin(ibmras::monitoring::Plugin* plugin) {
 
 void Agent::addPlugin(const std::string &dir, const std::string library) {
 	ibmras::monitoring::Plugin *plugin = ibmras::monitoring::Plugin::processLibrary(dir + PATHSEPARATOR + LIBPREFIX + library + LIBSUFFIX);
+	if (plugin) {
+		IBMRAS_LOG_2(fine, "%s, version %s", (plugin->name).c_str(), (plugin->getVersion()));
+		plugins.push_back(plugin);
+	}
+}
+
+void Agent::addPlugin(const char* completeLibraryPath) {
+	ibmras::monitoring::Plugin *plugin = ibmras::monitoring::Plugin::processLibrary(std::string(completeLibraryPath));
 	if (plugin) {
 		IBMRAS_LOG_2(fine, "%s, version %s", (plugin->name).c_str(), (plugin->getVersion()));
 		plugins.push_back(plugin);
