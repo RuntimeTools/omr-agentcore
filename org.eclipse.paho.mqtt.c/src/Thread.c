@@ -3,11 +3,11 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
@@ -181,12 +181,12 @@ thread_id_type Thread_getid()
 
 static int named_semaphore_count = 0;
 
-static struct 
+static struct
 {
 	sem_type sem;
 	char name[NAME_MAX-4];
 } named_semaphores[MAX_NAMED_SEMAPHORES];
- 
+
 #endif
 
 
@@ -216,21 +216,23 @@ sem_type Thread_create_sem()
     	else
     	{
     		int i;
-    		
+
     		named_semaphore_count++;
     		for (i = 0; i < MAX_NAMED_SEMAPHORES; ++i)
     		{
     			if (named_semaphores[i].name[0] == '\0')
-    			{ 
+    			{
     				named_semaphores[i].sem = sem;
-    				strcpy(named_semaphores[i].name, name);	
+    				strcpy(named_semaphores[i].name, name);
     				break;
     			}
     		}
     	}
 	#else
-		sem = malloc(sizeof(sem_t));
-		rc = sem_init(sem, 0, 0);
+        #if !defined(__MACH__) && !defined(__APPLE__)
+		    sem = malloc(sizeof(sem_t));
+            rc = sem_init(sem, 0, 0);
+        #endif
 	#endif
 	FUNC_EXIT_RC(rc);
 	return sem;
@@ -296,8 +298,10 @@ int Thread_check_sem(sem_type sem)
 #if defined(WIN32) || defined(WIN64)
 	return WaitForSingleObject(sem, 0) == WAIT_OBJECT_0;
 #else
-	int semval = -1;
-	sem_getvalue(sem, &semval);
+    int semval = -1;
+    #if !defined(__MACH__) && !defined(__APPLE__)
+	    sem_getvalue(sem, &semval);
+    #endif
 	return semval > 0;
 #endif
 }
@@ -343,16 +347,18 @@ int Thread_destroy_sem(sem_type sem)
     	for (i = 0; i < MAX_NAMED_SEMAPHORES; ++i)
     	{
     		if (named_semaphores[i].sem == sem)
-    		{ 
+    		{
     			rc = sem_unlink(named_semaphores[i].name);
-    			named_semaphores[i].name[0] = '\0';	
+    			named_semaphores[i].name[0] = '\0';
     			break;
     		}
     	}
     	named_semaphore_count--;
 	#else
-		rc = sem_destroy(sem);
-		free(sem);
+        #if !defined(__MACH__) && !defined(__APPLE__)
+		    rc = sem_destroy(sem);
+		    free(sem);
+        #endif
 	#endif
 	FUNC_EXIT_RC(rc);
 	return rc;
