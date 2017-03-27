@@ -583,8 +583,8 @@ void EnvPlugin::initStaticInfo() {
 	}
 	EnvPlugin::getInstance()->osName = GetWindowsMajorVersion();
 	EnvPlugin::getInstance()->osVersion = GetWindowsBuild();
-	EnvPlugin::getInstance()->nprocs = itoa(sysinfo.dwNumberOfProcessors);
-	EnvPlugin::getInstance()->pid = itoa(GetCurrentProcessId());
+	EnvPlugin::getInstance()->nprocs = std::to_string(sysinfo.dwNumberOfProcessors);
+	EnvPlugin::getInstance()->pid = std::to_string(GetCurrentProcessId());
 	EnvPlugin::getInstance()->commandLine = std::string(GetCommandLine());
 }
 #endif
