@@ -192,7 +192,7 @@ std::string Agent::getBuildDate() {
 }
 
 std::string Agent::getVersion() {
-	return "3.2.0";
+	return "3.2.1";
 }
 
 void Agent::setLogLevels() {
