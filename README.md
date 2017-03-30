@@ -1,6 +1,8 @@
 # OMR AgentCore
 Core agent for use when building runtime monitoring solutions
 
+[![Build Status - Master](https://travis-ci.org/RuntimeTools/omr-agentcore.svg?branch=master)](https://travis-ci.org/RuntimeTools/omr-agentcore)
+
 ## Getting Started
 This project is a currently a sub component of [Node Application Metrics](https://github.com/RuntimeTools/appmetrics) and [Swift Application Metrics](https://github.com/RuntimeTools/SwiftMetrics).
 
