@@ -20,7 +20,7 @@ Non-release versions of this project (for example on github.com/RuntimeTools/omr
 3.2.1
 
 ## Release History
-`3.2.1` - Bug fixes.
+`3.2.1` - Bug fixes.  
 `3.2.0` - New API to add plugins, various bug fixes.  
 `3.1.0` - Headless file creation added and bug fixes.  
 `3.0.10` - Various bug fixes and makefile changes.  
