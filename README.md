@@ -2,7 +2,7 @@
 Core agent for use when building runtime monitoring solutions
 
 ## Getting Started
-This project is a currently a sub component of https://github.com/RuntimeTools/appmetrics
+This project is a currently a sub component of [Node Application Metrics](https://github.com/RuntimeTools/appmetrics) and [Swift Application Metrics](https://github.com/RuntimeTools/SwiftMetrics).
 
 ## Source code
 The source code for OMR Agent Core is available in the [omr-agentcore project][1]. Information on working with the source code -- installing from source, developing, contributing -- is available on the [omr-agentcore wiki][2].
@@ -28,3 +28,4 @@ Non-release versions of this project (for example on github.com/RuntimeTools/omr
 
 [1]:https://github.com/RuntimeTools/omr-agentcore
 [2]:https://github.com/RuntimeTools/omr-agentcore/wiki
+[3]:https://github.com/RuntimeTools/appmetrics/wiki
