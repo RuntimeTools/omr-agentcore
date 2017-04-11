@@ -41,13 +41,13 @@ class DataSourceList {
 public:
 	void add(uint32 provID, T *src, std::string providerName);
 	DataSourceList() {head = NULL; size = 0;}
-	int32 getSize();
+	uint32 getSize();
 	std::string toString();
 	std::vector<Bucket*> getBuckets();
 	DataSource<T>* getItem(uint32 index);
 private:
 	DataSource<T> *head;
-	int32 size;
+	uint32 size;
 };
 
 
@@ -81,7 +81,7 @@ void DataSourceList<T>::add(uint32 provID, T *src, std::string providerName) {
 }
 
 template <class T>
-int32 DataSourceList<T>::getSize() {
+uint32 DataSourceList<T>::getSize() {
 	return size;
 }
 
