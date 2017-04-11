@@ -25,7 +25,7 @@ namespace common {
 template <class T>
 std::string itoa(T t) {
 #ifdef _WINDOWS
-    return std::to_string(t);
+    return std::to_string(static_cast<long long>(t));
 #else
 	std::stringstream s;
 	s << t;
