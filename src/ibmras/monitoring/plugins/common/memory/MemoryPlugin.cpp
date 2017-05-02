@@ -251,11 +251,11 @@ void MemoryPlugin::OnComplete(monitordata* data) {
  * CALLBACK WRAPPERS
  *****************************************************************************/
 
-extern "C" monitordata* pullWrapper() {
+monitordata* pullWrapper() {
 		return MemoryPlugin::getInstance()->OnRequestData();
 }
 
-extern "C" void pullCompleteWrapper(monitordata* data) {
+void pullCompleteWrapper(monitordata* data) {
 	MemoryPlugin::getInstance()->OnComplete(data);
 }
 
