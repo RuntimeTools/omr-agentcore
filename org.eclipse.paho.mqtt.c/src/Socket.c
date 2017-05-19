@@ -463,7 +463,7 @@ int Socket_putdatas(int socket, char* buf0, size_t buf0len, int count, char** bu
 
 	if ((rc = Socket_writev(socket, iovecs, count+1, &bytes)) != SOCKET_ERROR)
 	{
-		if (bytes == total)
+		if (total >= 0 && bytes == (size_t)total)
 			rc = TCPSOCKET_COMPLETE;
 		else
 		{
@@ -744,7 +744,7 @@ int Socket_continueWrite(int socket)
 	if ((rc = Socket_writev(socket, iovecs1, curbuf+1, &bytes)) != SOCKET_ERROR)
 	{
 		pw->bytes += bytes;
-		if ((rc = (pw->bytes == pw->total)))
+		if ((rc = (pw->total >= 0 && pw->bytes == (size_t)pw->total)))
 		{  /* topic and payload buffers are freed elsewhere, when all references to them have been removed */
 			for (i = 0; i < pw->count; i++)
 			{

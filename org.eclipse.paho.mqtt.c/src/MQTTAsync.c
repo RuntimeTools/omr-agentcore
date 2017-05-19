@@ -1509,7 +1509,7 @@ thread_return_type WINAPI MQTTAsync_receiveThread(void* n)
 				qEntry* qe = (qEntry*)(m->c->messageQueue->first->content);
 				int topicLen = qe->topicLen;
 
-				if (strlen(qe->topicName) == topicLen)
+				if (topicLen >= 0 && strlen(qe->topicName) == (size_t)topicLen)
 					topicLen = 0;
 
 				if (m->ma)

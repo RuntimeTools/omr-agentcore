@@ -52,9 +52,9 @@ const char* SYM_RECEIVE_MESSAGE = "ibmras_monitoring_receiveMessage";
 const char* SYM_VERSION = "ibmras_monitoring_getVersion";
 
 Plugin::Plugin() :
-		name(""), init(NULL), push(NULL), pull(NULL), start(NULL), stop(NULL), confactory(
-				NULL), recvfactory(NULL), receiveMessage(NULL), type(0), version(0), getVersion(NULL) {
-}
+		name(""), version(0), init(NULL), push(NULL), pull(NULL), start(NULL),
+		stop(NULL), getVersion(NULL), confactory(NULL), recvfactory(NULL),
+		receiveMessage(NULL), type(0) { }
 
 std::vector<Plugin*> Plugin::scan(const std::string& dir) {
 

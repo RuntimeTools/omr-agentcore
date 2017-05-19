@@ -73,7 +73,8 @@ const char* UTF8_char_validate(int len, const char* data)
 {
 	int good = 0;
 	int charlen = 2;
-	int i, j;
+	size_t i;
+	int j;
 	const char *rc = NULL;
 
 	FUNC_ENTRY;
