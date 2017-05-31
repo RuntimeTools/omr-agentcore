@@ -24,6 +24,11 @@
         "portdir%": "osx"
       },
     }],
+    ['OS=="os390"', {
+      "variables": {
+        "portdir%": "zos"
+      },
+    }],
     ['OS=="win"', {
       "variables": {
         "portdir%": "windows"
@@ -57,6 +62,10 @@
          "xcode_settings": {
             "OTHER_CPLUSPLUSFLAGS" : [ "-fexceptions" ],
          },
+      }],
+      ['OS=="os390"', {
+        "defines": [ "_ZOS" ],
+        'libraries': [ '-Wl,lp64,dll,xplink,-Wc,lp64,warn64,expo -Wc,"LANG(EXTENDED),COMPACT,COMPRESS,NOCONVLIT"' ],
       }],
       ['OS=="linux"', {
         "defines": [ "_LINUX", "LINUX" ],
