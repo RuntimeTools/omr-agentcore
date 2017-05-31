@@ -88,7 +88,7 @@
     {
       "target_name": "agentcore",
       "type": "shared_library",
-      "sources": [ 
+      "sources": [
         "<(srcdir)/common/Logger.cpp",
         "<(srcdir)/common/LogManager.cpp",
         "<(srcdir)/common/MemoryManager.cpp",
@@ -157,7 +157,7 @@
       "dependencies": [ "agentcore" ],
       "conditions": [
         [ 'node_byteorder=="big"', {
-          "defines": [ "REVERSED" ], 
+          "defines": [ "REVERSED" ],
         }],
       ],
     },
@@ -253,4 +253,3 @@
     },
   ],
 }
-
