@@ -197,7 +197,7 @@ bool Semaphore::wait(uint32 timeout) {
 	if (!result) {
 		IBMRAS_DEBUG(finest, "semaphore posted");
 		return true;
-	} 
+	}
 
     IBMRAS_DEBUG(finest, "possible semaphore timeout");
 	return (errno != EAGAIN);
