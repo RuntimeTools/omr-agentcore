@@ -35,6 +35,7 @@ extern "C" {
 APICONNECTORPLUGIN_DECL void registerListener(void(*)(const char*, unsigned int, void*));
 APICONNECTORPLUGIN_DECL void deregisterListener();
 APICONNECTORPLUGIN_DECL void sendControl(const char*, unsigned int length, void* message);
+APICONNECTORPLUGIN_DECL void apiPushData(const char *sendData);
 }
 
 class APIConnector: public ibmras::monitoring::connector::Connector {
@@ -48,6 +49,7 @@ public:
 
 	void registerReceiver(ibmras::monitoring::connector::Receiver *receiver);
     void deregisterReceiver();
+    void apiPushData(const char *sendData);
        
 	int start();
     int stop();
