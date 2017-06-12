@@ -64,7 +64,7 @@
          },
       }],
       ['OS=="os390"', {
-        "defines": [ "_ZOS" ],
+        "defines": [ "_ZOS", "_UNIX03_THREADS" ],
         'libraries': [ '-Wl,lp64,dll,xplink,-Wc,lp64,warn64,expo -Wc,"LANG(EXTENDED),COMPACT,COMPRESS,NOCONVLIT"' ],
       }],
       ['OS=="linux"', {
