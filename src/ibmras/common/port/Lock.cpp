@@ -15,10 +15,6 @@
  *******************************************************************************/
 
 
-#if defined(_ZOS)
-#define _OPEN_THREADS
-#endif
-
 #include "ibmras/common/port/Lock.h"
 #include "ibmras/common/logging.h"
 
