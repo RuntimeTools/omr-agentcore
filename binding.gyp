@@ -245,9 +245,9 @@
       "conditions": [
         ['OS=="os390"', {
           # don't build mqtt on z/OS
-          "dependencies!": [
+          "dependencies!": {
             "hcmqtt",
-          ],
+          },
         }],
       ],
     },
