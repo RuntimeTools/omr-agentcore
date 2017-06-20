@@ -30,9 +30,7 @@
 	#define sem_type HANDLE
 #else
 	#include <pthread.h>
-# if !defined(_ZOS)
 	#include <semaphore.h>
-# endif
 	#define thread_type pthread_t
 	#define thread_id_type pthread_t
 	#define thread_return_type void*
