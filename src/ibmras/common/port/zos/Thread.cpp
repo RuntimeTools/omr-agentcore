@@ -19,9 +19,13 @@
  */
 
 #pragma longname
+#ifndef _XOPEN_SOURCE
 #define _XOPEN_SOURCE
+#endif
 #define _XOPEN_SOURCE_EXTENDED 1
+#ifndef _UNIX03_THREADS
 #define _UNIX03_THREADS
+#endif
 #define _OPEN_SYS
 #define _OPEN_SYS_TIMED_EXT 1
 #include <pthread.h>
