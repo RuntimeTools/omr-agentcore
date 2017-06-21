@@ -45,6 +45,8 @@ const char PATHSEPARATOR = '/';
 const char* LIBPREFIX = "lib";
 #if defined(AIX)
 const char* LIBSUFFIX = ".a";
+#elif defined(__MACH__) || defined(__APPLE__)
+const char* LIBSUFFIX = ".dylib";
 #else
 const char* LIBSUFFIX = ".so";
 #endif
