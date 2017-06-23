@@ -11,7 +11,7 @@ ARCHIVE=ar -r
 ARCHIVE_MQTT=ar -r ${MQTT_LIB} 
 ARC_EXT=a
 CFLAGS=-O3 -Wall -pthread -c -fmessage-length=0 -fPIC 
-LIB_EXT=so
+LIB_EXT=dylib
 EXE_EXT=
 LIBFLAGS=-shared -fPIC -pthread -ldl 
 LIB_OBJOPT=-o"$@"

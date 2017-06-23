@@ -53,7 +53,7 @@ APICONNECTORPLUGIN_DECL void deregisterListener(){
     listener = NULL;
 }
 
-APICONNECTORPLUGIN_DECL void pushData(const char *sendData) {
+APICONNECTORPLUGIN_DECL void apiPushData(const char *sendData) {
     monitordata data;
     data.persistent = false;
     data.provID = plugin::provid;
