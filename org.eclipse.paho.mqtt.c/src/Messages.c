@@ -97,9 +97,9 @@ char* Messages_get(int index, int log_level)
 	char* msg = NULL;
 
 	if (log_level == TRACE_PROTOCOL)
-		msg = (index >= 0 && index < ARRAY_SIZE(protocol_message_list)) ? protocol_message_list[index] : NULL;
+		msg = (index >= 0 && (size_t)index < ARRAY_SIZE(protocol_message_list)) ? protocol_message_list[index] : NULL;
 	else
-		msg = (index >= 0 && index < ARRAY_SIZE(trace_message_list)) ? trace_message_list[index] : NULL;
+		msg = (index >= 0 && (size_t)index < ARRAY_SIZE(trace_message_list)) ? trace_message_list[index] : NULL;
 	return msg;
 }
 

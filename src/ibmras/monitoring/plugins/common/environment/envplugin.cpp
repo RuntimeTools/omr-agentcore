@@ -383,7 +383,7 @@ std::string EnvPlugin::GetCommandLine() {
 	int argsPos = commandOutput.find(app);
 	std::string argv;
 
-	if(argsPos != std::string::npos) {
+	if(argsPos >= 0 && (size_t)argsPos != std::string::npos) {
 		argv = commandOutput.substr(argsPos);
 	} else {
 

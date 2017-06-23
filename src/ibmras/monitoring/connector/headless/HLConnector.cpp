@@ -75,8 +75,8 @@ HLConnector* HLConnector::getInstance() {
 }
 
 HLConnector::HLConnector() :
-		enabled(false), running(false), filesInitialized(false), seqNumber(
-				1), lastPacked(0), times_run(0), startDelay(0) {
+		enabled(false), running(false), filesInitialized(false),
+				lastPacked(0), times_run(0), startDelay(0) {
 
 	number_runs = 0;
 	run_duration = 0;
@@ -370,9 +370,6 @@ int HLConnector::stop() {
 	if (enabled == false) {
 		return 0;
 	}
-
-	ibmras::monitoring::agent::Agent* agent =
-				ibmras::monitoring::agent::Agent::getInstance();
 
 	// Take lock before packing then clearing the files
 	if (!lock->acquire()) {

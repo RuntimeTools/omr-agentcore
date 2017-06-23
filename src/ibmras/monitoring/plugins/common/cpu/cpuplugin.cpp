@@ -65,7 +65,7 @@ CpuPlugin* CpuPlugin::instance = 0;
 agentCoreFunctions CpuPlugin::aCF;
 
 	CpuPlugin::CpuPlugin(uint32 provID):
-			provID(provID), noFailures(false), current(NULL), last(NULL){
+			provID(provID), noFailures(false), last(NULL), current(NULL) {
 	}
 
 	CpuPlugin::~CpuPlugin(){}

@@ -57,7 +57,6 @@ private:
 	bool running;
 	bool filesInitialized;
 
-	int32 seqNumber;
 	time_t lastPacked;
 	uint32 upper_limit;
 	int32 files_to_keep;
