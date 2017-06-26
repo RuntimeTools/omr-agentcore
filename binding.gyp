@@ -44,7 +44,7 @@
       ['_type=="shared_library"', {
         'product_prefix': '<(SHARED_LIB_PREFIX)',
         "conditions": [
-          ['OS=="aix"', {
+          ['OS=="aix" or OS=="os390"', {
             'product_extension': 'a',
           },{
           }],
