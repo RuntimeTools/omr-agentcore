@@ -18,7 +18,9 @@
 
 #if defined(_ZOS)
 #define _XOPEN_SOURCE_EXTENDED 1 //This macro makes zOS' unistd.h expose gethostname().
-#include <unistd.h>
+#define _POSIX_SOURCE
+#include <unistd.h> // gethostname()
+#include <sys/utsname.h> // uname()
 #endif
 
 
@@ -291,6 +293,57 @@ void EnvPlugin::initStaticInfo() {
 	}
 
 	EnvPlugin::getInstance()->nprocs = itoa(get_nprocs());
+	EnvPlugin::getInstance()->pid = itoa(getpid());
+	EnvPlugin::getInstance()->commandLine = GetCommandLine();
+}
+
+#endif
+
+/*
+ * z/OS
+ */
+#if defined (_ZOS)
+std::string EnvPlugin::GetCommandLine() {
+	std::stringstream filenamess;
+	filenamess << "/proc/" << getpid() << "/cmdline";
+	std::string filename = filenamess.str();
+
+	std::ifstream filestream(filename.c_str());
+
+	if (!filestream.is_open()) {
+
+		std::stringstream envss;
+		envss << "Failed to open " << filename.c_str();
+
+		return "";
+	}
+
+    std::istreambuf_iterator<char> begin(filestream), end;
+    std::string cmdline(begin, end);
+    filestream.close();
+
+	for (unsigned i=0; i < cmdline.length(); i++) {
+		if (cmdline[i] == '\0') {
+			cmdline[i] = ' ';
+		}
+	}
+	return cmdline;
+}
+
+void EnvPlugin::initStaticInfo() {
+	struct utsname sysinfo;
+	int rc = uname(&sysinfo);
+	if (rc >= 0) {
+		EnvPlugin::getInstance()->arch = std::string(sysinfo.machine);
+		EnvPlugin::getInstance()->osName = std::string(sysinfo.sysname);
+		EnvPlugin::getInstance()->osVersion = std::string(sysinfo.release) + std::string(sysinfo.version);
+	} else {
+		EnvPlugin::getInstance()->arch = "unknown"; // could fallback to compile-time information
+		EnvPlugin::getInstance()->osName = "z/OS";
+		EnvPlugin::getInstance()->osVersion = "";
+	}
+
+	EnvPlugin::getInstance()->nprocs = "";
 	EnvPlugin::getInstance()->pid = itoa(getpid());
 	EnvPlugin::getInstance()->commandLine = GetCommandLine();
 }
