@@ -239,7 +239,7 @@
       "conditions": [
         ['OS=="os390"', {
           # don't build hcmqtt or headless plugin
-          "dependencies!": [ "hcmqtt", "headlessplugin", ],
+          "dependencies!": [ "hcmqtt" ],
         }],
       ],
       "copies": [
