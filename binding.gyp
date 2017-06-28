@@ -235,8 +235,8 @@
       "dependencies": [
       	"agentcore",
         "hcapiplugin",
-        "cpuplugin",
         "envplugin",
+        "cpuplugin",
         "memoryplugin",
         "headlessplugin",
       ],
@@ -245,6 +245,7 @@
           # don't build hcmqtt or headless plugin
           "dependencies!": [ 
              "headlessplugin",
+             "memoryplugin",
           ],
         }],
       ],
