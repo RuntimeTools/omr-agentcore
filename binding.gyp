@@ -229,7 +229,6 @@
       "type": "none",
       "dependencies": [
       	"agentcore",
-        "hcmqtt",
         "hcapiplugin",
         "cpuplugin",
         "envplugin",
