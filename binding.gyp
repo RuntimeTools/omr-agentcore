@@ -257,11 +257,8 @@
       ],
       "conditions": [
         ['OS=="os390"', {
-          # don't build mqtt on z/OS
-          "dependencies!": [
-            "hcmqtt",
-            "headlessplugin",
-          ],
+          # don't build hcmqtt or headless plugin
+          "dependencies!": [ "hcmqtt", "headlessplugin", ],
         }],
       ],
     },
