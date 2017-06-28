@@ -44,7 +44,7 @@
       ['_type=="shared_library"', {
         'product_prefix': '<(SHARED_LIB_PREFIX)',
         "conditions": [
-          ['OS=="aix" or OS=="os390"', {
+          ['OS=="aix"', {
             'product_extension': 'a',
           },{
           }],
@@ -202,6 +202,19 @@
         "<(srcdir)/monitoring/connector/api/APIConnector.cpp",
       ],
       "dependencies": [ "agentcore" ],
+      "conditions": [
+        ['OS=="os390"', {
+          # don't link on library - instead reinclude source files
+          "dependencies!": [ "agentcore" ],
+          "sources+": [
+            "<(srcdir)/common/util/strUtils.cpp",
+            "<(srcdir)/common/MemoryManager.cpp",
+            "<(srcdir)/common/Logger.cpp",
+            "<(srcdir)/common/LogManager.cpp",
+            "<(srcdir)/common/port/Lock.cpp",
+          ],
+        }],
+      ],
     },
     {
       "target_name": "headlessplugin",
@@ -247,6 +260,7 @@
           # don't build mqtt on z/OS
           "dependencies!": [
             "hcmqtt",
+            "headlessplugin",
           ],
         }],
       ],
