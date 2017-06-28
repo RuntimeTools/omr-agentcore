@@ -133,7 +133,7 @@
     {
       "target_name": "hcmqtt",
       "type": "shared_library",
-      "sources": [
+      "sources%": [
         "<(pahosrcdir)/Clients.c",
         "<(pahosrcdir)/Heap.c",
         "<(pahosrcdir)/LinkedList.c",
@@ -158,6 +158,11 @@
       "conditions": [
         [ 'node_byteorder=="big"', {
           "defines": [ "REVERSED" ],
+        }],
+        ['OS=="os390"', {
+          # don't build hcmqtt
+          "dependencies!": [ "agentcore" ],
+          "sources": [ ]          
         }],
       ],
     },
