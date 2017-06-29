@@ -234,12 +234,14 @@
         "cpuplugin",
         "memoryplugin",
         "headlessplugin",
+        "hcmqtt"
       ],
       "conditions": [
         ['OS=="os390"', {
           # don't build hcmqtt or headless plugin
           "dependencies!": [ 
              "headlessplugin",
+             "hcmqtt",
           ],
         }],
       ],
@@ -259,6 +261,15 @@
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)memoryplugin<(SHARED_LIB_SUFFIX)",
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)hcapiplugin<(SHARED_LIB_SUFFIX)",
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)headlessplugin<(SHARED_LIB_SUFFIX)",
+          ],
+          "conditions": [
+            ['OS=="os390"', {
+              # no hcmqtt or headless plugin
+              "files!": [
+                "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)hcmqtt<(SHARED_LIB_SUFFIX)",
+                "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)headlessplugin<(SHARED_LIB_SUFFIX)",
+              ],
+            }],
           ],
         },
       ],
