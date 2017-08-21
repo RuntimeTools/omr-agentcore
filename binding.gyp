@@ -65,6 +65,8 @@
       }],
       ['OS=="os390"', {
         "defines": [ "_ZOS", "_UNIX03_THREADS" ],
+        'ldflags': ['-Wc,EXPORTALL'],
+      ],
       }],
       ['OS=="linux"', {
         "defines": [ "_LINUX", "LINUX" ],
