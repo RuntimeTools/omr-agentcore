@@ -65,7 +65,7 @@
       }],
       ['OS=="os390"', {
         "defines": [ "_ZOS", "_UNIX03_THREADS" ],
-        'ccflags_cc+': ['-Wc,EXPORTALL'],
+        'ccflags_cc': ['-Wc,EXPORTALL'],
       }],
       ['OS=="linux"', {
         "defines": [ "_LINUX", "LINUX" ],
