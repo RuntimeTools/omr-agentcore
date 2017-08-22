@@ -190,6 +190,7 @@ pullsource* MemoryPlugin::createSource(agentCoreFunctions aCF, uint32 provID) {
 }
 
 pullsource* MemoryPlugin::createPullSource(uint32 srcid, const char* name) {
+    aCF.logMessage(fine, "MemoryPlugin::createPullSource");
 		pullsource *src = new pullsource();
 		src->header.name = name;
 		std::string desc("Description for ");
@@ -764,4 +765,3 @@ char* MemoryPlugin::NewCString(const std::string& s) {
 } //plugins
 } //monitoring
 } //ibmras
-

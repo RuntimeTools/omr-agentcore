@@ -189,6 +189,7 @@ void EnvPlugin::OnComplete(monitordata* data) {
 }
 
 pullsource* EnvPlugin::createPullSource(uint32 srcid, const char* name) {
+  aCF.logMessage(fine, "EnvPlugin::createPullSource");
 	pullsource *src = new pullsource();
 	src->header.name = name;
 	std::string desc("Description for ");
