@@ -238,10 +238,7 @@ agentCoreFunctions CpuPlugin::aCF;
 	extern "C" {
 	pullsource* ibmras_monitoring_registerPullSource(agentCoreFunctions aCF, uint32 provID) {
 		aCF.logMessage(fine, ">>>ibmras_monitoring_registerPullSource");
-    // don't want this to register for z/OS as it doesn't work on that platform
-#if !defined(_ZOS)
 		pullsource *source = CpuPlugin::createSource(aCF, provID);
-#endif
 		aCF.logMessage(fine, "<<<ibmras_monitoring_registerPullSource");
 		return source;
 	}
