@@ -239,9 +239,10 @@
       ],
       "conditions": [
         ['OS=="os390"', {
-          # don't build hcmqtt or cpuplugin on zOS
+          # don't build hcmqtt, memoryplugin or cpuplugin on zOS
           "dependencies!": [
              "hcmqtt",
+             "memoryplugin",
              "cpuplugin",
              #the following don't work on zOS yet
              "headlessplugin",
@@ -267,10 +268,11 @@
           ],
           "conditions": [
             ['OS=="os390"', {
-              # no hcmqtt or cpuplugin on zOS
+              # no hcmqtt, memoryplugin or cpuplugin on zOS
               "files!": [
                 "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)hcmqtt<(SHARED_LIB_SUFFIX)",
                 "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)cpuplugin<(SHARED_LIB_SUFFIX)",
+                "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)memoryplugin<(SHARED_LIB_SUFFIX)",
                 #the following don't work on zOS yet
                 "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)headlessplugin<(SHARED_LIB_SUFFIX)",
               ],
