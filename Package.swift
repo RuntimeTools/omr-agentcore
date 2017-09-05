@@ -45,6 +45,6 @@ let package = Package(
       .target(name: "cpuplugin"),
       .target(name: "envplugin"),
       .target(name: "memplugin"),
-      .target(name: "hcapiplugin")
+      .target(name: "hcapiplugin", dependencies: ["agentcore"])
     ]
 )
