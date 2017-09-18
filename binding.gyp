@@ -24,6 +24,11 @@
         "portdir%": "osx"
       },
     }],
+    ['OS=="os390"', {
+      "variables": {
+        "portdir%": "zos"
+      },
+    }],
     ['OS=="win"', {
       "variables": {
         "portdir%": "windows"
@@ -58,6 +63,10 @@
             "OTHER_CPLUSPLUSFLAGS" : [ "-fexceptions" ],
          },
       }],
+      ['OS=="os390"', {
+        "defines": [ "_ZOS", "_UNIX03_THREADS" ],
+        'cflags_cc': ['-Wc,EXPORTALL'],
+      }],
       ['OS=="linux"', {
         "defines": [ "_LINUX", "LINUX" ],
       }],
@@ -80,7 +89,7 @@
     {
       "target_name": "agentcore",
       "type": "shared_library",
-      "sources": [ 
+      "sources": [
         "<(srcdir)/common/Logger.cpp",
         "<(srcdir)/common/LogManager.cpp",
         "<(srcdir)/common/MemoryManager.cpp",
@@ -149,7 +158,7 @@
       "dependencies": [ "agentcore" ],
       "conditions": [
         [ 'node_byteorder=="big"', {
-          "defines": [ "REVERSED" ], 
+          "defines": [ "REVERSED" ],
         }],
       ],
     },
@@ -194,6 +203,19 @@
         "<(srcdir)/monitoring/connector/api/APIConnector.cpp",
       ],
       "dependencies": [ "agentcore" ],
+      "conditions": [
+        ['OS=="os390"', {
+          # don't link on library - instead reinclude source files
+          "dependencies!": [ "agentcore" ],
+          "sources+": [
+            "<(srcdir)/common/util/strUtils.cpp",
+            "<(srcdir)/common/MemoryManager.cpp",
+            "<(srcdir)/common/Logger.cpp",
+            "<(srcdir)/common/LogManager.cpp",
+            "<(srcdir)/common/port/Lock.cpp",
+          ],
+        }],
+      ],
     },
     {
       "target_name": "headlessplugin",
@@ -208,12 +230,24 @@
       "type": "none",
       "dependencies": [
       	"agentcore",
-        "hcmqtt",
         "hcapiplugin",
-        "cpuplugin",
         "envplugin",
+        "cpuplugin",
         "memoryplugin",
         "headlessplugin",
+        "hcmqtt",
+      ],
+      "conditions": [
+        ['OS=="os390"', {
+          # don't build hcmqtt, memoryplugin or cpuplugin on zOS
+          "dependencies!": [
+             "hcmqtt",
+             "memoryplugin",
+             "cpuplugin",
+             #the following don't work on zOS yet
+             "headlessplugin",
+          ],
+        }],
       ],
       "copies": [
         {
@@ -232,9 +266,20 @@
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)hcapiplugin<(SHARED_LIB_SUFFIX)",
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)headlessplugin<(SHARED_LIB_SUFFIX)",
           ],
+          "conditions": [
+            ['OS=="os390"', {
+              # no hcmqtt, memoryplugin or cpuplugin on zOS
+              "files!": [
+                "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)hcmqtt<(SHARED_LIB_SUFFIX)",
+                "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)cpuplugin<(SHARED_LIB_SUFFIX)",
+                "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)memoryplugin<(SHARED_LIB_SUFFIX)",
+                #the following don't work on zOS yet
+                "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)headlessplugin<(SHARED_LIB_SUFFIX)",
+              ],
+            }],
+          ],
         },
       ],
     },
   ],
 }
-

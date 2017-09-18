@@ -18,6 +18,9 @@
 
 #if defined(_ZOS)
 #define _XOPEN_SOURCE_EXTENDED 1 //This macro makes zOS' unistd.h expose gethostname().
+#define _POSIX_SOURCE
+#include <unistd.h> // gethostname()
+#include <sys/utsname.h> // uname()
 #endif
 
 
@@ -89,13 +92,13 @@ std::string itoa(T t);
 EnvPlugin* EnvPlugin::instance = NULL;
 agentCoreFunctions EnvPlugin::aCF;
 
-	EnvPlugin::EnvPlugin(uint32 provID): 
+	EnvPlugin::EnvPlugin(uint32 provID):
 		provID(provID) {
 	}
-	
+
 	EnvPlugin::~EnvPlugin(){}
 
-	
+
 	int EnvPlugin::start() {
 		aCF.logMessage(debug, ">>>EnvPlugin::start()");
 		EnvPlugin::initStaticInfo(); // See below for platform-specific implementation, protected by ifdefs
@@ -141,7 +144,7 @@ void EnvPlugin::AppendEnvVars(std::stringstream &ss) {
 	if (!hostnameDefined) {
 		char hostname[HOST_NAME_MAX + 1];
 		if (gethostname(hostname, HOST_NAME_MAX) == 0) {
-			ss  << "environment.HOSTNAME=" << hostname << '\n'; 
+			ss  << "environment.HOSTNAME=" << hostname << '\n';
 		}
 	}
 }
@@ -162,12 +165,12 @@ monitordata* EnvPlugin::OnRequestData() {
 	monitordata *data = new monitordata;
 	data->provID = provID;
 	data->sourceID = 0;
-	
+
 	std::stringstream contentss;
 	contentss << "#EnvironmentSource\n";
 	AppendEnvVars(contentss);
 	AppendSystemInfo(contentss);
-	
+
 	std::string content = contentss.str();
 	data->size = static_cast<uint32>(content.length()); // should data->size be a size_t?
 	data->data = NewCString(content);
@@ -186,6 +189,7 @@ void EnvPlugin::OnComplete(monitordata* data) {
 }
 
 pullsource* EnvPlugin::createPullSource(uint32 srcid, const char* name) {
+  aCF.logMessage(fine, "EnvPlugin::createPullSource");
 	pullsource *src = new pullsource();
 	src->header.name = name;
 	std::string desc("Description for ");
@@ -245,7 +249,7 @@ extern "C" {
 	}
 }
 
-/* 
+/*
  * Linux
  */
 #if defined (_LINUX)
@@ -253,7 +257,7 @@ std::string EnvPlugin::GetCommandLine() {
 	std::stringstream filenamess;
 	filenamess << "/proc/" << getpid() << "/cmdline";
 	std::string filename = filenamess.str();
-	
+
 	std::ifstream filestream(filename.c_str());
 
 	if (!filestream.is_open()) {
@@ -267,13 +271,13 @@ std::string EnvPlugin::GetCommandLine() {
     std::istreambuf_iterator<char> begin(filestream), end;
     std::string cmdline(begin, end);
     filestream.close();
-	
+
 	for (unsigned i=0; i < cmdline.length(); i++) {
 		if (cmdline[i] == '\0') {
 			cmdline[i] = ' ';
 		}
 	}
-	return cmdline;	
+	return cmdline;
 }
 
 void EnvPlugin::initStaticInfo() {
@@ -296,15 +300,66 @@ void EnvPlugin::initStaticInfo() {
 
 #endif
 
-/* 
- * AIX 
+/*
+ * z/OS
+ */
+#if defined (_ZOS)
+std::string EnvPlugin::GetCommandLine() {
+	std::stringstream filenamess;
+	filenamess << "/proc/" << getpid() << "/cmdline";
+	std::string filename = filenamess.str();
+
+	std::ifstream filestream(filename.c_str());
+
+	if (!filestream.is_open()) {
+
+		std::stringstream envss;
+		envss << "Failed to open " << filename.c_str();
+
+		return "";
+	}
+
+    std::istreambuf_iterator<char> begin(filestream), end;
+    std::string cmdline(begin, end);
+    filestream.close();
+
+	for (unsigned i=0; i < cmdline.length(); i++) {
+		if (cmdline[i] == '\0') {
+			cmdline[i] = ' ';
+		}
+	}
+	return cmdline;
+}
+
+void EnvPlugin::initStaticInfo() {
+	struct utsname sysinfo;
+	int rc = uname(&sysinfo);
+	if (rc >= 0) {
+		EnvPlugin::getInstance()->arch = std::string(sysinfo.machine);
+		EnvPlugin::getInstance()->osName = std::string(sysinfo.sysname);
+		EnvPlugin::getInstance()->osVersion = std::string(sysinfo.release) + std::string(sysinfo.version);
+	} else {
+		EnvPlugin::getInstance()->arch = "unknown"; // could fallback to compile-time information
+		EnvPlugin::getInstance()->osName = "z/OS";
+		EnvPlugin::getInstance()->osVersion = "";
+	}
+
+	EnvPlugin::getInstance()->nprocs = "";
+	EnvPlugin::getInstance()->pid = itoa(getpid());
+	EnvPlugin::getInstance()->commandLine = GetCommandLine();
+}
+
+#endif
+
+/*
+ * AIX
  */
 #if defined (_AIX)
 
 std::string EnvPlugin::GetCommandLine() {
 	struct procsinfo proc;
 	char procargs[512]; // Is this a decent length? Should we heap allocate and expand?
-	
+
 	proc.pi_pid = getpid();
 	int rc = getargs(&proc, sizeof(proc), procargs, sizeof(procargs));
 	if (rc < 0) {
@@ -334,9 +389,9 @@ void EnvPlugin::initStaticInfo() {
 	if (rc >= 0) {
 		uint64_t architecture = getsystemcfg(SC_ARCH);
 		uint64_t width = getsystemcfg(SC_WIDTH);
-		
-		std::string bits = (width == 32) ? "32" : 
-		                   (width == 64) ? "64" : 
+
+		std::string bits = (width == 32) ? "32" :
+		                   (width == 64) ? "64" :
 		                   "";
 		EnvPlugin::getInstance()->arch = (architecture == POWER_PC) ? "ppc" : "";
 		if (EnvPlugin::getInstance()->arch != "") {
@@ -469,13 +524,13 @@ std::string getCommandOutput(std::string command) {
 const std::string EnvPlugin::GetWindowsMajorVersion() {
 	OSVERSIONINFOEX versionInfo;
 	versionInfo.dwOSVersionInfoSize = sizeof(versionInfo);
-	
+
 	static const std::string defaultVersion = "Windows";
-	
+
 	if (!GetVersionEx((OSVERSIONINFO *) &versionInfo)) {
 		return defaultVersion;
 	}
-	
+
 	switch (versionInfo.dwPlatformId) {
 	case VER_PLATFORM_WIN32s: return "Windows 3.1";
 	case VER_PLATFORM_WIN32_WINDOWS:
@@ -485,11 +540,11 @@ const std::string EnvPlugin::GetWindowsMajorVersion() {
 		default: return "Windows 98";
 		}
 		break; /* VER_PLATFORM_WIN32_WINDOWS */
-		
+
 	case VER_PLATFORM_WIN32_NT:
 		if (versionInfo.dwMajorVersion < 5)  {
 			return "Windows NT";
-			
+
 		} else if (versionInfo.dwMajorVersion == 5) {
 			switch (versionInfo.dwMinorVersion) {
 			case 0: return "Windows 2000";
@@ -506,7 +561,7 @@ const std::string EnvPlugin::GetWindowsMajorVersion() {
 				}
 			default: return "Windows XP";
 			}
-			
+
 		} else if (versionInfo.dwMajorVersion == 6) {
 			switch (versionInfo.wProductType) {
 			case VER_NT_WORKSTATION:
@@ -528,7 +583,7 @@ const std::string EnvPlugin::GetWindowsMajorVersion() {
 			return defaultVersion;
 		}
 		break; /* VER_PLATFORM_WIN32_NT */
-			
+
 	default: return defaultVersion;
 	}
 }
@@ -538,11 +593,11 @@ const std::string EnvPlugin::GetWindowsBuild() {
 	int len = sizeof("0123456789.0123456789 build 0123456789 ") + 1;
 	char *buffer;
 	int position;
-	
+
 	static const std::string defaultBuild = "";
-	
+
 	versionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOW);
-	
+
 	if (!GetVersionExW(&versionInfo)) {
 		return defaultBuild;
 	}
@@ -563,7 +618,7 @@ const std::string EnvPlugin::GetWindowsBuild() {
 		buffer[position++] = ' ';
 		WideCharToMultiByte(CP_UTF8, 0, versionInfo.szCSDVersion, -1, &buffer[position], len - position - 1, NULL, NULL);
 	}
-	
+
 	std::string version(buffer);
 	delete[] buffer;
 	return version;
@@ -577,7 +632,7 @@ void EnvPlugin::initStaticInfo() {
 	case PROCESSOR_ARCHITECTURE_ARM: EnvPlugin::getInstance()->arch = "arm"; break;
 	case PROCESSOR_ARCHITECTURE_IA64: EnvPlugin::getInstance()->arch = "itanium"; break;
 	case PROCESSOR_ARCHITECTURE_INTEL: EnvPlugin::getInstance()->arch = "x86"; break;
-	default: 
+	default:
 		EnvPlugin::getInstance()->arch = "unknown"; // could fallback to compile-time information
 		break;
 	}
@@ -601,5 +656,3 @@ std::string itoa(T t) {
 }//plugins
 }//monitoring
 }//ibmras
-
-
