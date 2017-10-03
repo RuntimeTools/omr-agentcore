@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-
+#if defined(_ZOS)
+#ifndef _UNIX03_THREADS
+#define _UNIX03_THREADS
+#endif
+#endif
 
 #include "ibmras/common/port/Lock.h"
 #include "ibmras/common/logging.h"

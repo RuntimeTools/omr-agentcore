@@ -27,6 +27,8 @@
 
 #if defined(_ZOS)
 #include <unistd.h>
+#include <locale.h>
+#include <iconv.h>
 #endif
 
 namespace ibmras {
@@ -73,11 +75,90 @@ bool equalsIgnoreCase(const std::string& s1, const std::string& s2) {
 	return true;
 }
 
+std::string expectedNativeCodepage() {
+#if defined(_ZOS)
+  std::string localeString(setlocale(LC_ALL, NULL));
+  std::size_t dotIndex = localeString.find_first_of('.');
+  if (dotIndex != std::string::npos) {
+    // might have additional @xxx or .xxx - remove)
+    std::size_t atIndex = localeString.find_first_of("@.", dotIndex + 1);
+    // this will be either where an @ sign is or npos
+    if (dotIndex != std::string::npos) {
+      return localeString.substr(dotIndex + 1, atIndex - dotIndex - 1);
+    } else {
+      return localeString.substr(dotIndex + 1);
+    }
+  } else {
+    return "IBM-1047";
+  }
+#endif
+}
+
+void convertToExpectedNative(char * str) {
+#if defined(_ZOS)
+  std::string codepage = expectedNativeCodepage();
+  if (codepage.compare("IBM-1047") == 0) {
+      //already in that codepage - return
+      return;
+  }
+  char *cp = (char*)ibmras::common::memory::allocate(strlen(str) + 1);
+  strcpy(cp,str);
+  iconv_t cd;
+  int rc;
+  char *inptr = cp;
+  char *outptr = str;
+  size_t inleft = strlen(str);
+  size_t outleft = strlen(str);
+
+  if ((cd = iconv_open(codepage.c_str(), "IBM-1047")) == (iconv_t)(-1)) {
+    fprintf(stderr, "Cannot open converter from %s to %s\n", "IBM-1047", codepage.c_str());
+    return;
+  }
+  
+  rc = iconv(cd, &inptr, &inleft, &outptr, &outleft);
+  if (rc == -1) {
+    fprintf(stderr, "Error in converting characters\n");
+  }
+  iconv_close(cd);
+  ibmras::common::memory::deallocate((unsigned char**)&cp);
+#endif
+}
+
+void convertFromExpectedNative(char * str) {
+#if defined(_ZOS)
+  std::string codepage = expectedNativeCodepage();
+  if (codepage.compare("IBM-1047") == 0) {
+      //already in that codepage - return
+      return;
+  }
+  char *cp = (char*)ibmras::common::memory::allocate(strlen(str) + 1);
+  strcpy(cp,str);
+  iconv_t cd;
+  int rc;
+  char *inptr = cp;
+  char *outptr = str;
+  size_t inleft = strlen(str);
+  size_t outleft = strlen(str);
+
+  if ((cd = iconv_open("IBM-1047", codepage.c_str())) == (iconv_t)(-1)) {
+    fprintf(stderr, "Cannot open converter from %s to %s\n", codepage.c_str(), "IBM-1047");
+    return;
+  }
+  
+  rc = iconv(cd, &inptr, &inleft, &outptr, &outleft);
+  if (rc == -1) {
+    fprintf(stderr, "Error in converting characters\n");
+  }
+  iconv_close(cd);
+  ibmras::common::memory::deallocate((unsigned char**)&cp);
+#endif
+}
 
 void native2Ascii(char * str) {
 #if defined(_ZOS)
     if ( NULL != str )
     {
+        convertToExpectedNative(str);
         __etoa(str);
     }
 #endif
@@ -92,6 +173,7 @@ ascii2Native(char * str)
     if ( NULL != str )
     {
         __atoe(str);
+        convertFromExpectedNative(str);
     }
 #endif
 
