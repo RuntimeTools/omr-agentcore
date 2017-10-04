@@ -75,8 +75,8 @@ bool equalsIgnoreCase(const std::string& s1, const std::string& s2) {
 	return true;
 }
 
-std::string expectedNativeCodepage() {
 #if defined(_ZOS)
+std::string expectedNativeCodepage() {
   std::string localeString(setlocale(LC_ALL, NULL));
   std::size_t dotIndex = localeString.find_first_of('.');
   if (dotIndex != std::string::npos) {
@@ -91,11 +91,10 @@ std::string expectedNativeCodepage() {
   } else {
     return "IBM-1047";
   }
-#endif
 }
 
-void convertToExpectedNative(char * str) {
-#if defined(_ZOS)
+
+void convertCodePage(char * str, const char* toCodePage, const char * fromCodePage) {
   std::string codepage = expectedNativeCodepage();
   if (codepage.compare("IBM-1047") == 0) {
       //already in that codepage - return
@@ -104,61 +103,34 @@ void convertToExpectedNative(char * str) {
   char *cp = (char*)ibmras::common::memory::allocate(strlen(str) + 1);
   strcpy(cp,str);
   iconv_t cd;
-  int rc;
+  size_t rc;
   char *inptr = cp;
   char *outptr = str;
   size_t inleft = strlen(str);
   size_t outleft = strlen(str);
 
-  if ((cd = iconv_open(codepage.c_str(), "IBM-1047")) == (iconv_t)(-1)) {
-    fprintf(stderr, "Cannot open converter from %s to %s\n", "IBM-1047", codepage.c_str());
+  if ((cd = iconv_open(toCodePage, fromCodePage)) == (iconv_t)(-1)) {
+    fprintf(stderr, "Cannot open converter to %s from %s\n", toCodePage, fromCodePage);
     return;
   }
-  
+
   rc = iconv(cd, &inptr, &inleft, &outptr, &outleft);
   if (rc == -1) {
     fprintf(stderr, "Error in converting characters\n");
   }
   iconv_close(cd);
   ibmras::common::memory::deallocate((unsigned char**)&cp);
-#endif
 }
-
-void convertFromExpectedNative(char * str) {
-#if defined(_ZOS)
-  std::string codepage = expectedNativeCodepage();
-  if (codepage.compare("IBM-1047") == 0) {
-      //already in that codepage - return
-      return;
-  }
-  char *cp = (char*)ibmras::common::memory::allocate(strlen(str) + 1);
-  strcpy(cp,str);
-  iconv_t cd;
-  int rc;
-  char *inptr = cp;
-  char *outptr = str;
-  size_t inleft = strlen(str);
-  size_t outleft = strlen(str);
-
-  if ((cd = iconv_open("IBM-1047", codepage.c_str())) == (iconv_t)(-1)) {
-    fprintf(stderr, "Cannot open converter from %s to %s\n", codepage.c_str(), "IBM-1047");
-    return;
-  }
-  
-  rc = iconv(cd, &inptr, &inleft, &outptr, &outleft);
-  if (rc == -1) {
-    fprintf(stderr, "Error in converting characters\n");
-  }
-  iconv_close(cd);
-  ibmras::common::memory::deallocate((unsigned char**)&cp);
 #endif
-}
 
-void native2Ascii(char * str) {
+
+void native2Ascii(char * str, bool convertToCurrentLocale) {
 #if defined(_ZOS)
     if ( NULL != str )
     {
-        convertToExpectedNative(str);
+        if (convertToCurrentLocale) {
+          convertCodePage(str, expectedNativeCodepage().c_str(), "IBM-1047");
+        }
         __etoa(str);
     }
 #endif
@@ -167,13 +139,15 @@ void native2Ascii(char * str) {
 
 /******************************/
 void
-ascii2Native(char * str)
+ascii2Native(char * str, bool convertFromCurrentLocale)
 {
 #if defined(_ZOS)
     if ( NULL != str )
     {
         __atoe(str);
-        convertFromExpectedNative(str);
+        if (convertFromCurrentLocale) {
+          convertCodePage(str, "IBM-1047", expectedNativeCodepage().c_str());
+        }
     }
 #endif
 
@@ -207,7 +181,7 @@ force2Native(char * str)
 #endif
 }
 
-char* createAsciiString(const char* nativeString) {
+char* createAsciiString(const char* nativeString, bool convertToCurrentLocale) {
     char* cp = NULL;
     if ( NULL != nativeString )
     {
@@ -219,13 +193,13 @@ char* createAsciiString(const char* nativeString) {
         {
             /* jnm is valid, so is cp */
             strcpy(cp,nativeString);
-            native2Ascii(cp);
+            native2Ascii(cp, convertToCurrentLocale);
         }
     }
     return cp;
 }
 
-char* createNativeString(const char* asciiString) {
+char* createNativeString(const char* asciiString, bool convertFromCurrentLocale) {
     char* cp = NULL;
     if ( NULL != asciiString )
     {
@@ -237,7 +211,7 @@ char* createNativeString(const char* asciiString) {
         {
             /* jnm is valid, so is cp */
             strcpy(cp,asciiString);
-            ascii2Native(cp);
+            ascii2Native(cp, convertFromCurrentLocale);
         }
     }
     return cp;

@@ -25,11 +25,11 @@ std::vector<std::string> split(const std::string &s, char delim);
 bool endsWith(const std::string& str, const std::string& suffix);
 bool startsWith(const std::string& str, const std::string& prefix);
 DECL bool equalsIgnoreCase(const std::string& s1, const std::string& s2);
-DECL void native2Ascii(char * str);
-DECL void ascii2Native(char * str);
+DECL void native2Ascii(char * str, bool convertToCurrentLocale = true);
+DECL void ascii2Native(char * str, bool convertFromCurrentLocale = true);
 DECL void force2Native(char * str);
-DECL char* createAsciiString(const char* nativeString);
-DECL char* createNativeString(const char* asciiString);
+DECL char* createAsciiString(const char* nativeString, bool convertToCurrentLocale = true);
+DECL char* createNativeString(const char* asciiString, bool convertFromCurrentLocale = true);
 
 }/*end of namespace util*/
 }/*end of namespace common*/
