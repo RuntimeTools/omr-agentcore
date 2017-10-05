@@ -6,35 +6,25 @@
     "externalbinariesdir%": "./plugins",
     'build_id%': '.<!(["python", "./generate_build_id.py"])',
     'coreversion%': '3.2.2',
-  },
-  "conditions": [
-    ['OS=="aix"', {
-      "variables": {
-        "portdir%": "aix",
+    "conditions": [
+      ['OS=="aix"', {
+        "portdir": "aix",
         "SHARED_LIB_SUFFIX": ".a",
-      },
-    }],
-    ['OS=="linux"', {
-      "variables": {
-        "portdir%": "linux"
-      },
-    }],
-    ['OS=="mac"', {
-      "variables": {
-        "portdir%": "osx"
-      },
-    }],
-    ['OS=="os390"', {
-      "variables": {
-        "portdir%": "zos"
-      },
-    }],
-    ['OS=="win"', {
-      "variables": {
-        "portdir%": "windows"
-      },
-    }]
-  ],
+      }],
+      ['OS=="linux"', {
+        "portdir": "linux"
+      }],
+      ['OS=="mac"', {
+        "portdir": "osx"
+      }],
+      ['OS in "os390 zos"', {
+        "portdir": "zos"
+      }],
+      ['OS=="win"', {
+        "portdir": "windows"
+      }]
+    ],
+  },
 
   "target_defaults": {
     "cflags_cc!": [ '-fno-exceptions' ],
@@ -63,9 +53,10 @@
             "OTHER_CPLUSPLUSFLAGS" : [ "-fexceptions" ],
          },
       }],
-      ['OS=="os390"', {
+      ['OS in "os390 zos"', {
         "defines": [ "_ZOS", "_UNIX03_THREADS" ],
         'cflags_cc': ['-Wc,EXPORTALL'],
+        'cflags!': [ '-fno-omit-frame-pointer' ],
       }],
       ['OS=="linux"', {
         "defines": [ "_LINUX", "LINUX" ],
@@ -204,7 +195,7 @@
       ],
       "dependencies": [ "agentcore" ],
       "conditions": [
-        ['OS=="os390"', {
+        ['OS in "os390 zos"', {
           # don't link on library - instead reinclude source files
           "dependencies!": [ "agentcore" ],
           "sources+": [
@@ -238,7 +229,7 @@
         "hcmqtt",
       ],
       "conditions": [
-        ['OS=="os390"', {
+        ['OS in "os390 zos"', {
           # don't build hcmqtt, memoryplugin or cpuplugin on zOS
           "dependencies!": [
              "hcmqtt",
@@ -267,7 +258,7 @@
             "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)headlessplugin<(SHARED_LIB_SUFFIX)",
           ],
           "conditions": [
-            ['OS=="os390"', {
+            ['OS in "os390 zos"', {
               # no hcmqtt, memoryplugin or cpuplugin on zOS
               "files!": [
                 "<(PRODUCT_DIR)/<(SHARED_LIB_PREFIX)hcmqtt<(SHARED_LIB_SUFFIX)",

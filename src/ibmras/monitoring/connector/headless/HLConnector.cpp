@@ -121,6 +121,8 @@ int HLConnector::start() {
 		startDelay = atoi(delay.c_str());
 	}
 
+    IBMRAS_DEBUG_1(debug, "startDelay = %d", startDelay);
+
 	std::string ulString = agent->getAgentProperty("headless.files.max.size");
 	if (ulString.length()) {
 		upper_limit = atoi(ulString.c_str());
@@ -391,8 +393,9 @@ int HLConnector::stop() {
 
 int HLConnector::sendMessage(const std::string &sourceId, uint32 size,
 		void* data) {
-
+    IBMRAS_DEBUG(debug, ">>>HLConnector::sendMessage()");
 	if (!running || !collect || !enabled) {
+        IBMRAS_DEBUG_3(debug, "running = %s, collect = %s, enabled = %s", running?"true":"false", collect?"true":"false", enabled?"true":"false");
 		IBMRAS_DEBUG(debug, "<<<HLConnector::sendMessage()[NOT COLLECTING DATA]");
 		return 0;
 	}
