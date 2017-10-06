@@ -284,7 +284,7 @@ void* MQTTPersistence_restorePacket(char* buffer, size_t buflen)
 		fixed_header_length++;
 	} while ((c & 128) != 0);
 
-	int total_length = fixed_header_length = remaining_length;
+	int total_length = fixed_header_length + remaining_length;
 	if ( total_length >= 0 && (size_t)total_length == buflen )
 	{
 		ptype = header.bits.type;
