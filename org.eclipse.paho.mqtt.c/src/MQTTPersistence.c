@@ -3,11 +3,11 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
@@ -250,7 +250,7 @@ int MQTTPersistence_restore(Clients *c)
 		if (msgkeys)
 			free(msgkeys);
 	}
-	Log(TRACE_MINIMUM, -1, "%d sent messages and %d received messages restored for client %s\n", 
+	Log(TRACE_MINIMUM, -1, "%d sent messages and %d received messages restored for client %s\n",
 		msgs_sent, msgs_rcvd, c->clientID);
 	MQTTPersistence_wrapMsgID(c);
 
@@ -268,7 +268,7 @@ void* MQTTPersistence_restorePacket(char* buffer, size_t buflen)
 {
 	void* pack = NULL;
 	Header header;
-	int fixed_header_length = 1, ptype, remaining_length = 0;
+	int fixed_header_length = 1, ptype, total_length, remaining_length = 0;
 	char c;
 	int multiplier = 1;
 	extern pf new_packets[];
@@ -284,7 +284,7 @@ void* MQTTPersistence_restorePacket(char* buffer, size_t buflen)
 		fixed_header_length++;
 	} while ((c & 128) != 0);
 
-	int total_length = fixed_header_length + remaining_length;
+	total_length = fixed_header_length + remaining_length;
 	if ( total_length >= 0 && (size_t)total_length == buflen )
 	{
 		ptype = header.bits.type;
@@ -471,7 +471,7 @@ int MQTTPersistence_unpersistQueueEntry(Clients* client, MQTTPersistence_qEntry*
 {
 	int rc = 0;
 	char key[PERSISTENCE_MAX_KEY_LENGTH + 1];
-	
+
 	FUNC_ENTRY;
 	sprintf(key, "%s%d", PERSISTENCE_QUEUE_KEY, qe->seqno);
 	if ((rc = client->persistence->premove(client->phandle, key)) != 0)
@@ -489,36 +489,36 @@ int MQTTPersistence_persistQueueEntry(Clients* aclient, MQTTPersistence_qEntry* 
 	char key[PERSISTENCE_MAX_KEY_LENGTH + 1];
 	int* lens = NULL;
 	void** bufs = NULL;
-		
+
 	FUNC_ENTRY;
 	lens = (int*)malloc(nbufs * sizeof(int));
 	bufs = malloc(nbufs * sizeof(char *));
-						
+
 	bufs[bufindex] = &qe->msg->payloadlen;
 	lens[bufindex++] = sizeof(qe->msg->payloadlen);
-				
+
 	bufs[bufindex] = qe->msg->payload;
 	lens[bufindex++] = qe->msg->payloadlen;
-		
+
 	bufs[bufindex] = &qe->msg->qos;
 	lens[bufindex++] = sizeof(qe->msg->qos);
-		
+
 	bufs[bufindex] = &qe->msg->retained;
 	lens[bufindex++] = sizeof(qe->msg->retained);
-		
+
 	bufs[bufindex] = &qe->msg->dup;
 	lens[bufindex++] = sizeof(qe->msg->dup);
-				
+
 	bufs[bufindex] = &qe->msg->msgid;
 	lens[bufindex++] = sizeof(qe->msg->msgid);
-						
+
 	bufs[bufindex] = qe->topicName;
 	lens[bufindex++] = strlen(qe->topicName) + 1;
-				
+
 	bufs[bufindex] = &qe->topicLen;
-	lens[bufindex++] = sizeof(qe->topicLen);			
-		
-	sprintf(key, "%s%d", PERSISTENCE_QUEUE_KEY, ++aclient->qentry_seqno);	
+	lens[bufindex++] = sizeof(qe->topicLen);
+
+	sprintf(key, "%s%d", PERSISTENCE_QUEUE_KEY, ++aclient->qentry_seqno);
 	qe->seqno = aclient->qentry_seqno;
 
 	if ((rc = aclient->persistence->pput(aclient->phandle, key, nbufs, (char**)bufs, lens)) != 0)
@@ -537,39 +537,39 @@ MQTTPersistence_qEntry* MQTTPersistence_restoreQueueEntry(char* buffer, size_t b
 	MQTTPersistence_qEntry* qe = NULL;
 	char* ptr = buffer;
 	int data_size;
-	
+
 	FUNC_ENTRY;
 	qe = malloc(sizeof(MQTTPersistence_qEntry));
 	memset(qe, '\0', sizeof(MQTTPersistence_qEntry));
-	
+
 	qe->msg = malloc(sizeof(MQTTPersistence_message));
 	memset(qe->msg, '\0', sizeof(MQTTPersistence_message));
-	
+
 	qe->msg->payloadlen = *(int*)ptr;
 	ptr += sizeof(int);
-	
+
 	data_size = qe->msg->payloadlen;
 	qe->msg->payload = malloc(data_size);
 	memcpy(qe->msg->payload, ptr, data_size);
 	ptr += data_size;
-	
+
 	qe->msg->qos = *(int*)ptr;
 	ptr += sizeof(int);
-	
+
 	qe->msg->retained = *(int*)ptr;
 	ptr += sizeof(int);
-	
+
 	qe->msg->dup = *(int*)ptr;
 	ptr += sizeof(int);
-	
+
 	qe->msg->msgid = *(int*)ptr;
 	ptr += sizeof(int);
-	
-	data_size = strlen(ptr) + 1;	
+
+	data_size = strlen(ptr) + 1;
 	qe->topicName = malloc(data_size);
 	strcpy(qe->topicName, ptr);
 	ptr += data_size;
-	
+
 	qe->topicLen = *(int*)ptr;
 	ptr += sizeof(int);
 
@@ -614,15 +614,15 @@ int MQTTPersistence_restoreMessageQueue(Clients* c)
 		{
 			char *buffer = NULL;
 			int buflen;
-					
+
 			if (strncmp(msgkeys[i], PERSISTENCE_QUEUE_KEY, strlen(PERSISTENCE_QUEUE_KEY)) != 0)
 				;
 			else if ((rc = c->persistence->pget(c->phandle, msgkeys[i], &buffer, &buflen)) == 0)
 			{
 				MQTTPersistence_qEntry* qe = MQTTPersistence_restoreQueueEntry(buffer, buflen);
-				
+
 				if (qe)
-				{	
+				{
 					qe->seqno = atoi(msgkeys[i]+2);
 					MQTTPersistence_insertInSeqOrder(c->messageQueue, qe, sizeof(MQTTPersistence_qEntry));
 					free(buffer);
