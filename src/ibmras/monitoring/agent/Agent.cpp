@@ -194,7 +194,7 @@ std::string Agent::getBuildDate() {
 }
 
 std::string Agent::getVersion() {
-	return "3.2.2";
+	return "3.2.4";
 }
 
 void Agent::setLogLevels() {
@@ -298,7 +298,7 @@ const char* getPropertyImpl(const char * key){
 //WE CAN EXPOSE THIS IN THE FUTURE IF WE WANT TO, SO THE PLUGINS CAN ALSO SET PROPERTIES
 //--------------------------------------------------------------------------------------
 void setPropertyImpl(const char* key, const char* value) {
-	
+
 	Agent::getInstance()->setProperty(key, value);
 
 }
@@ -612,7 +612,7 @@ void Agent::startReceivers() {
 					connectionManager.addReceiver(receiver);
 				}
 			} else if ((*i)->receiveMessage) {
-				ibmras::monitoring::connector::Receiver* receiver = 
+				ibmras::monitoring::connector::Receiver* receiver =
 						new ibmras::monitoring::AgentExtensionReceiver((*i)->receiveMessage);
 				if (receiver) {
 					IBMRAS_DEBUG_1(info, "Add extension receiver %s to connector manager",
@@ -784,4 +784,3 @@ bool Agent::loadPropertiesFile(const char* filestr){
 }
 }
 } /* end namespace monitoring */
-
