@@ -130,9 +130,12 @@ void stopAllThreads() {
 	// wake currently sleeping threads
 	condBroadcast();
 	while (!threadMap.empty()) {
-		pthread_cancel(threadMap.top());
+		pthread_t top = threadMap.top();
+		pthread_cancel(top);
 		//wait for the thread to stop
-		pthread_join(threadMap.top(), NULL);
+		pthread_mutex_unlock(&threadMapMux);
+		pthread_join(top, NULL);
+		pthread_mutex_lock(&threadMapMux);
 		threadMap.pop();
 	}
 	pthread_mutex_unlock(&threadMapMux);
