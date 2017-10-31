@@ -512,9 +512,9 @@ int64 MemoryPlugin::getTotalPhysicalMemorySize() {
     num_pages = sysconf(_SC_PHYS_PAGES);
 
 	if (pagesize == -1 || num_pages == -1) {
-		return 0;
+		return -1;
     } else {
-		return (int64) pagesize *num_pages;
+		return (int64) pagesize * num_pages;
 	}
 	/*
 	 * There is a bug in OSX Mavericks which may cause the compilation to fail
@@ -528,9 +528,9 @@ int64 MemoryPlugin::getTotalPhysicalMemorySize() {
 	int mib[2] = {CTL_HW, HW_MEMSIZE};
 	unsigned long physicalMemSize;
 	size_t len = sizeof(physicalMemSize);
-	if(!sysctl(mib, 2, &physicalMemSize, &len, NULL, 0)) {
+	if (!sysctl(mib, 2, &physicalMemSize, &len, NULL, 0)) {
 		return physicalMemSize;
-	}else {
+	} else {
 		aCF.logMessage(debug, strerror(errno));
 		return -1;
 	}
@@ -538,9 +538,9 @@ int64 MemoryPlugin::getTotalPhysicalMemorySize() {
 	int mib[2] = {CTL_HW, HW_PHYSMEM};
 		unsigned long physicalMemSize;
 		size_t len = sizeof(physicalMemSize);
-		if(!sysctl(mib, 2, &physicalMemSize, &len, NULL, 0)) {
+		if (!sysctl(mib, 2, &physicalMemSize, &len, NULL, 0)) {
 			return physicalMemSize;
-		}else {
+		} else {
 			aCF.logMessage(debug, strerror(errno));
 			return -1;
 		}
