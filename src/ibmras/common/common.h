@@ -32,6 +32,7 @@ std::string itoa(T t) {
 	return s.str();
 #endif
 
+template <class T>
 std::string ftoa(T t) {
 #ifdef _WINDOWS
     return std::to_string(static_cast<long double>(t));
