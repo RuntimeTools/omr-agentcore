@@ -31,6 +31,7 @@ std::string itoa(T t) {
 	s << t;
 	return s.str();
 #endif
+}
 
 template <class T>
 std::string ftoa(T t) {
