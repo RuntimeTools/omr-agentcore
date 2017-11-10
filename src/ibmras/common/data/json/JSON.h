@@ -35,7 +35,7 @@ class JSONStat {
 public:
 	JSONStat(const char* name) { this->name = name; value = NULL; }
 	void setValue(char* value) { this->value = value;}
-	void setValue(double value) { this->value = ibmras::common::itoa(value); };
+	void setValue(double value) { this->value = ibmras::common::ftoa(value); };
 	const char* getName();
 	char* getValue();
 private:
