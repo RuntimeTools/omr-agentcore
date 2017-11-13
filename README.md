@@ -22,10 +22,10 @@ Non-release versions of this project (for example on github.com/RuntimeTools/omr
 3.2.6
 
 ## Release History
-`3.2.6` - Bug fixes.
-`3.2.5` - Bug fixes.
-`3.2.4` - Node on z/OS support.
-`3.2.3` - Swift 4 support.
+`3.2.6` - Bug fixes.  
+`3.2.5` - Bug fixes.  
+`3.2.4` - Node on z/OS support.  
+`3.2.3` - Swift 4 support.  
 `3.2.2` - Fix compiler issues on vs2010.  
 `3.2.1` - Bug fixes.  
 `3.2.0` - New API to add plugins, various bug fixes.  
