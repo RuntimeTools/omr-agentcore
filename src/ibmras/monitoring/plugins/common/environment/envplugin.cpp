@@ -59,6 +59,12 @@
 #include <sys/sysinfo.h> // get_nprocs()
 #include <unistd.h> // gethostname()
 #include <procinfo.h>
+#if defined(__PASE__)
+	//on PASE procinfo.h does not declare getargs()
+	extern "C"{
+		extern int getargs(void *, int, char *, int);
+	}
+#endif
 #include <sys/types.h>
 #endif
 

@@ -10,4 +10,5 @@ Authors ordered by first contribution:
  - Julie Stalley (https://github.com/stalleyj)
  - Richard Lau (https://github.com/richardlau)
  - Gibson Fahnestock (https://github.com/gibfahn)
+ - Abdirahim Musse (https://github.com/ab-m)
  
