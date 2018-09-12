@@ -83,7 +83,7 @@ std::string LibraryUtils::getLibraryLocation(const void* func) {
 	std::string path;
 
 #if defined (WINDOWS)
-#elif defined(AIX)
+#elif defined(_AIX)
 #elif defined(_ZOS)
 #else
 	Dl_info dlInfo;

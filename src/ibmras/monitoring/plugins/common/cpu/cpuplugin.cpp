@@ -24,9 +24,14 @@
 #include <sstream>
 #include <fstream>
 #include <cstring>
-#if defined(_AIX)
+#if defined(_AIX) && !defined(__PASE__)
 #include <unistd.h>
 #include <libperfstat.h>
+#endif
+#if defined(__PASE__)
+#include <unistd.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 #endif
 #if defined(__MACH__) || defined(__APPLE__)
 #include <sys/time.h>
@@ -306,7 +311,7 @@ struct CPUTime* CpuPlugin::getCPUTime() {
 
 	aCF.logMessage(debug, ">>>CpuPlugin::getCPUTime");
 
-#if defined(_AIX)
+#if defined(_AIX) && !defined(__PASE__)
 	static const uint32 NS_PER_CPU_TICK = 10000000;
 	static const uint32 NS_PER_MS = 1000000;
 	struct CPUTime* cputime = new CPUTime;
@@ -426,6 +431,34 @@ struct CPUTime* CpuPlugin::getCPUTime() {
 		}
 
 		return cputime;
+#elif defined(__PASE__)
+	struct CPUTime* cputime = new CPUTime;
+	struct rusage usage;
+	//microseconds->nanoseconds
+	uint64 nsStart = time_microseconds() *1000;
+	if (getrusage(RUSAGE_SELF, &usage) < 0){
+	   std::stringstream errorss;
+		errorss << "[env_os] Could not get process cpu time, error: ";
+		errorss << strerror(errno);
+		aCF.logMessage(warning, errorss.str().c_str());
+	}
+	//microseconds->nanoseconds
+	uint64 nsEnd = time_microseconds() *1000;
+
+	//seconds->microsecond
+	uint64 userTimeSec = static_cast<uint64>(usage.ru_utime.tv_sec * 1000000);
+	uint64 userTimeMs = static_cast<uint64>(usage.ru_utime.tv_usec);
+
+	//seconds->microsecond
+	uint64 sysTimeSec = static_cast<uint64>(usage.ru_stime.tv_sec * 1000000);
+	uint64 sysTimeMs = static_cast<uint64>(usage.ru_stime.tv_usec);
+
+	//microseconds->nanoseconds
+	cputime->process = ((userTimeSec + userTimeMs + sysTimeSec + sysTimeMs) *1000);
+	cputime->time = nsStart + ((nsEnd - nsStart) /2);
+	//TODO: figure out how to get global cpu time, For now place hold with 1.
+	cputime->total = uint64(1);
+	return cputime;
 #else
 		return NULL;
 #endif

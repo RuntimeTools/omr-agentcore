@@ -162,7 +162,7 @@ START_TIME_TYPE MQTTAsync_start_clock(void)
 {
 	return GetTickCount();
 }
-#elif defined(AIX)
+#elif defined(_AIX)
 #define START_TIME_TYPE struct timespec
 START_TIME_TYPE MQTTAsync_start_clock(void)
 {
@@ -186,7 +186,7 @@ long MQTTAsync_elapsed(DWORD milliseconds)
 {
 	return GetTickCount() - milliseconds;
 }
-#elif defined(AIX)
+#elif defined(_AIX)
 #define assert(a)
 long MQTTAsync_elapsed(struct timespec start)
 {

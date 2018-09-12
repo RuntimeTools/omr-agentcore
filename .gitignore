@@ -1,3 +1,4 @@
 build/
 libagentcore.so
 plugins/
+libagentcore.a

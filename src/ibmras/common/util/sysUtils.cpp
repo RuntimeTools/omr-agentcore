@@ -26,7 +26,7 @@
 	#include <Psapi.h>
 #elif defined(LINUX) || defined(__MACH__) || defined(__APPLE__)
 #include <sys/time.h>
-#elif defined(AIX)
+#elif defined(_AIX)
 #include <sys/time.h>
 #elif defined(_ZOS)
 #include <sys/time.h>

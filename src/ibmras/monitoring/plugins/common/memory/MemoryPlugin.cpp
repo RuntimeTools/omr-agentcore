@@ -59,7 +59,7 @@
 #pragma comment(lib, "psapi.lib")
 #endif
 
-#if defined(AIXPPC)
+#if defined(_AIX)
 #include <unistd.h>
 #include <alloca.h>
 #include <procinfo.h>
@@ -315,7 +315,7 @@ int64 MemoryPlugin::getProcessPhysicalMemorySize() {
 	size_t size = t_info.resident_size;
 	return size;
 
-#elif defined(AIXPPC)
+#elif defined(_AIX)
         /*
          * There is no API on AIX to get the rss of the shared memory used by this process.
          * If such an API was available, this function should return the following:
@@ -367,7 +367,7 @@ int64 MemoryPlugin::getProcessPrivateMemorySize() {
                 }
         }
 #undef SHARED_FIELD_INDEX
-#elif defined(AIXPPC)
+#elif defined(_AIX)
         struct procentry64 pe;
         pid_t pid = getpid();
 
@@ -416,7 +416,7 @@ int64  MemoryPlugin::getProcessVirtualMemorySize() {
 	task_info(current_task(), TASK_BASIC_INFO, (task_info_t)&t_info, &t_info_count);
 	size_t size = t_info.virtual_size;
 	return size;
-#elif defined(AIXPPC)
+#elif defined(_AIX)
         /* There is no API on AIX to get shared memory usage for the process. If such an
          * API existed, we could return getProcessPrivateMemorySize() + sharedSize here.
          *
@@ -459,7 +459,7 @@ int64 MemoryPlugin::getFreePhysicalMemorySize() {
         }
         return vm_stat.free_count*pageSize;
 
-#elif defined(AIXPPC)
+#elif defined(_AIX) && !defined(__PASE__)
         /* NOTE: This works on AIX 5.3 and later. */
         IDATA numPageSizes = vmgetinfo(NULL, VMINFO_GETPSIZES, 0);
 
@@ -496,13 +496,18 @@ int64 MemoryPlugin::getFreePhysicalMemorySize() {
                 return statex.ullAvailPhys;
         }
         return -1;
+#elif defined (__PASE__)
+        //TODO: Working on PASE Implementation
+        //AIXPPC implementation fails on PASE ...
+        // ...@ line 482 size never gets changed therefore -1 is returned 
+        return -1;
 #else
         return -1;
 #endif
 }
 
 int64 MemoryPlugin::getTotalPhysicalMemorySize() {
-#if defined (_AIX)
+#if defined (_AIX) && !defined(__PASE__)
 	return (int64)(sysconf(_SC_AIX_REALMEM) * 1024);
 
 #elif defined(_LINUX) ||defined(__MACH__)&&defined(_SC_PAGESIZE)&&defined(_SC_PHYS_PAGES) ||defined(__APPLE__)&&defined(_SC_PAGESIZE)&&defined(_SC_PHYS_PAGES)
@@ -558,6 +563,11 @@ int64 MemoryPlugin::getTotalPhysicalMemorySize() {
 #elif defined(_S390)
 	/* Get_Physical_Memory returns "SIZE OF ACTUAL REAL STORAGE ONLINE IN 'K'" */
 	return Get_Physical_Memory() * 1024;
+#elif defined (__PASE__)
+        //TODO: Working on PASE implementation.
+        //AIX implementation: sysconf(_SC_AIX_REALMEM) returns -1
+        //errno is set to 109 Function not implemented POSIX
+        return -1;
 #else
 	return -1;
 #endif
