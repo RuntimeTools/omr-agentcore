@@ -18,7 +18,8 @@
         "portdir": "osx"
       }],
       ['OS in "os390 zos"', {
-        "portdir": "zos"
+        "portdir": "zos",
+        "SHARED_LIB_SUFFIX": ".so"
       }],
       ['OS=="win"', {
         "portdir": "windows"
@@ -37,6 +38,9 @@
           ['OS=="aix"', {
             'product_extension': 'a',
           },{
+          }],
+          ['OS in "os390 zos"', {
+            'product_extension': 'so',
           }],
         ],
       }],
