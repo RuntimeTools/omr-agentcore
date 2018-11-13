@@ -5,7 +5,7 @@
 #    "externalbinariesdir%": "<(PRODUCT_DIR)/deploy/external/binaries",
     "externalbinariesdir%": "./plugins",
     'build_id%': '.<!(["python", "./generate_build_id.py"])',
-    'coreversion%': '3.2.8',
+    'coreversion%': '3.2.9',
     "conditions": [
       ['OS=="aix"', {
         "portdir": "aix",
@@ -95,6 +95,7 @@
   "targets": [
     {
       "target_name": "agentcore",
+      "win_delay_load_hook": "false",
       "type": "shared_library",
       "sources": [
         "<(srcdir)/common/Logger.cpp",
@@ -140,6 +141,7 @@
     },
     {
       "target_name": "hcmqtt",
+      "win_delay_load_hook": "false",
       "type": "shared_library",
       "sources": [
         "<(pahosrcdir)/Clients.c",
@@ -171,6 +173,7 @@
     },
     {
       "target_name": "cpuplugin",
+      "win_delay_load_hook": "false",
       "type": "shared_library",
       "sources": [
         "<(srcdir)/monitoring/plugins/common/cpu/cpuplugin.cpp",
@@ -193,6 +196,7 @@
     },
     {
       "target_name": "memoryplugin",
+      "win_delay_load_hook": "false",
       "type": "shared_library",
       "sources": [
         "<(srcdir)/monitoring/plugins/common/memory/MemoryPlugin.cpp",
@@ -205,6 +209,7 @@
     },
     {
       "target_name": "envplugin",
+      "win_delay_load_hook": "false",
       "type": "shared_library",
       "sources": [
         "<(srcdir)/monitoring/plugins/common/environment/envplugin.cpp",
@@ -212,6 +217,7 @@
     },
    {
       "target_name": "hcapiplugin",
+      "win_delay_load_hook": "false",
       "type": "shared_library",
       "sources": [
         "<(srcdir)/monitoring/connector/api/APIConnector.cpp",
@@ -233,6 +239,7 @@
     },
     {
       "target_name": "headlessplugin",
+      "win_delay_load_hook": "false",
       "type": "shared_library",
       "sources": [
         "<(srcdir)/monitoring/connector/headless/HLConnector.cpp",
@@ -241,6 +248,7 @@
     },
     {
       "target_name": "external",
+      "win_delay_load_hook": "false",
       "type": "none",
       "dependencies": [
       	"agentcore",
