@@ -85,9 +85,19 @@ bool Semaphore::wait(uint32 timeout) {
 
 	IBMRAS_DEBUG(finest,  "Semaphore::wait");
 	DWORD retVal = WaitForSingleObject(handle, timeout * 1000);
-	if ( !GetLastError()) {
-		return (retVal == WAIT_OBJECT_0);
-	}
+	switch (retVal) 
+        { 
+            case WAIT_OBJECT_0: 
+		IBMRAS_DEBUG(finest,  "Semaphore::wait SUCCESS");
+                return true;
+
+            case WAIT_TIMEOUT: 
+		IBMRAS_DEBUG(finest,  "Semaphore::wait WAIT_TIMEOUT");
+                break; 
+				
+	case WAIT_FAILED:
+		IBMRAS_DEBUG(finest,  "Semaphore::wait WAIT_FAILED");
+	}	
 	return false;
 
 }
