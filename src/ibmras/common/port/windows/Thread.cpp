@@ -95,7 +95,7 @@ bool Semaphore::wait(uint32 timeout) {
 		IBMRAS_DEBUG(finest,  "Semaphore::wait WAIT_TIMEOUT");
                 break; 
 				
-	case WAIT_FAILED:
+	    case WAIT_FAILED:
 		IBMRAS_DEBUG(finest,  "Semaphore::wait WAIT_FAILED");
 	}	
 	return false;
