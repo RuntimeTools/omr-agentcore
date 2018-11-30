@@ -155,14 +155,14 @@ void stopAllThreads() {
 	pthread_mutex_unlock(&threadMapMux);
 }
 
-Semaphore::Semaphore(uint32 initial, uint32 max) {
+Semaphore::Semaphore(uint32 initial, uint32 max, const char* sourceName) {
 	if (!stopping) {
         name = "/hc/";
         name.append(ibmras::common::itoa(getpid()));
         name.append("/");
         name.append(ibmras::common::itoa(pthread_self()));
 		handle = new sem_t;
-		IBMRAS_DEBUG_1(fine, "in thread.cpp creating semaphore %s", name.c_str());
+		IBMRAS_DEBUG_2(fine, "in thread.cpp creating semaphore %s for %s", name.c_str(), sourceName);
 
 		handle = sem_open(name.c_str(), O_CREAT | O_EXCL, S_IRWXU | S_IRWXG | S_IRWXO, initial);
         int i=0;

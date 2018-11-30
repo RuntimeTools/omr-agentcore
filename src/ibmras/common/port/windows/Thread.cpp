@@ -64,9 +64,9 @@ void stopAllThreads() {
 	IBMRAS_DEBUG(fine,"in thread.cpp->stopAllThreads");
 }
 
-Semaphore::Semaphore(uint32 initial, uint32 max) {
+Semaphore::Semaphore(uint32 initial, uint32 max, const char* sourceName) {
 	handle = new HANDLE;
-	IBMRAS_DEBUG(fine,  "in thread.cpp creating CreateSemaphoreA");
+    IBMRAS_DEBUG_1(fine,"in thread.cpp creating semaphore for source %s", sourceName);
 	handle = CreateSemaphoreA(NULL, initial, max, NULL);
 	if(handle == NULL) {
 		IBMRAS_DEBUG_1(warning,  "Failed to create semaphore : error code %d", GetLastError());

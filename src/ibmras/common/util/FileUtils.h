@@ -24,13 +24,8 @@ namespace ibmras {
 namespace common {
 namespace util {
 
-class FileUtils {
-
-public:
-
 bool createDirectory(std::string& path);
-
-};
+bool createFile(std::string& path);
 
 }
 }

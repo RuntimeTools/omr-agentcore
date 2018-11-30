@@ -143,10 +143,10 @@ void stopAllThreads() {
 	pthread_mutex_unlock(&threadMapMux);
 }
 
-Semaphore::Semaphore(uint32 initial, uint32 max) {
+Semaphore::Semaphore(uint32 initial, uint32 max, const char* sourceName) {
 	if (!stopping) {
 		handle = new sem_t;
-		IBMRAS_DEBUG(fine,"in thread.cpp creating CreateSemaphoreA");
+		IBMRAS_DEBUG_1(fine,"in thread.cpp creating semaphore for source %s", sourceName);
 		int result;
 		result = sem_init(reinterpret_cast<sem_t*>(handle), 0, initial);
 		if (result) {
