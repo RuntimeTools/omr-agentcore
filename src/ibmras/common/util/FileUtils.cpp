@@ -42,7 +42,7 @@ namespace util {
 
 IBMRAS_DEFINE_LOGGER("FileUtils");
 
-bool ibmras::common::util::createDirectory(std::string& path) {
+bool createDirectory(std::string& path) {
 	IBMRAS_DEBUG(debug, ">>>FileUtils::createDirectory");
 	bool created = false;
 
@@ -130,7 +130,7 @@ bool ibmras::common::util::createDirectory(std::string& path) {
 	return created;
 }
 
-bool ibmras::common::util::createFile(std::string& path) {
+bool createFile(std::string& path) {
 	bool created = false;
     const char* pathName = path.c_str();
     IBMRAS_DEBUG_1(debug, ">>>FileUtils::createFile(), path = %s", pathName);
