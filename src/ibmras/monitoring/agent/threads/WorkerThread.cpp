@@ -25,7 +25,6 @@ namespace agent {
 namespace threads {
 
 extern IBMRAS_DECLARE_LOGGER;
-IBMRAS_DEFINE_LOGGER("WorkerThread");
 
 
 WorkerThread::WorkerThread(pullsource* pullSource) : semaphore(0, 1, pullSource->header.name), data(threadEntry, cleanUp), countdown(0) {
@@ -102,4 +101,3 @@ void* WorkerThread::processLoop() {
 }
 }
 } /* end of namespace threads */
-
