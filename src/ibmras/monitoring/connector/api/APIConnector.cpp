@@ -64,13 +64,9 @@ APICONNECTORPLUGIN_DECL void apiPushData(const char *sendData) {
 }
 
 APICONNECTORPLUGIN_DECL void sendControl(const char* topic, unsigned int length, void* message) {
-	char* nativeString = ibmras::common::util::createNativeString(topic);
-    const char* constMessage = static_cast<const char* const>(message);
-    char* nativeMessage = ibmras::common::util::createNativeString(constMessage);
-
-	plugin::receiver->receiveMessage(std::string(nativeString), length, nativeMessage);
-	ibmras::common::memory::deallocate((unsigned char**)&nativeString);
-    ibmras::common::memory::deallocate((unsigned char**)&nativeMessage);
+	char* nativeTopic = ibmras::common::util::createNativeString(topic);
+    plugin::receiver->receiveMessage(std::string(nativeTopic), length, message);
+	ibmras::common::memory::deallocate((unsigned char**)&nativeTopic);
 }
 
 } // end extern C
