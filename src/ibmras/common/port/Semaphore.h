@@ -34,13 +34,16 @@ namespace port {
 /* class to provide semaphore semantics */
 class Semaphore {
 public:
-	Semaphore(uint32 initial, uint32 max);					/* semaphore initial and max count */
-	void inc();												/* increase the semaphore count */
-	bool wait(uint32 timeout);								/* decrement the semaphore count */
-	~Semaphore();											/* OS cleanup of semaphore */
+	Semaphore(uint32 initial, uint32 max, const char *sourceName);  /* semaphore initial and max count, source name */
+	void inc();									                    /* increase the semaphore count */
+	bool wait(uint32 timeout);                                      /* decrement the semaphore count */
+	~Semaphore();                                                   /* OS cleanup of semaphore */
+#if defined(_ZOS)
+    int open(int* semid);                                           /* Either create a new semaphore or open an existing one*/
+#endif 
 private:
-	void* handle;											/* opaque handle to platform data structure */
-#if defined __MACH__
+	void* handle;											 /* opaque handle to platform data structure */
+#if defined __MACH__ || defined(_ZOS)
     std::string name;
 #endif
 };
