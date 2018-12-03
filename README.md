@@ -19,9 +19,10 @@ This project uses a semver-parsable X.0.Z version number for releases, where X i
 Non-release versions of this project (for example on github.com/RuntimeTools/omr-agentcore) will use semver-parsable X.0.Z-dev.B version numbers, where X.0.Z is the last release with Z incremented and B is an integer. For further information on the development process go to the  [appmetrics wiki][3]: [Developing](https://github.com/RuntimeTools/appmetrics/wiki/Developing).
 
 ## Version
-3.2.9
+4.0.0
 
 ## Release History
+`4.0.0` - Fixes for z/OS API connections and semaphore reuse.  
 `3.2.9` - Build fixes for Node 10.  
 `3.2.8` - Initial support for iPASE systems.  
 `3.2.7` - Bug fix - common itoa mangling decimals (Windows only).  
