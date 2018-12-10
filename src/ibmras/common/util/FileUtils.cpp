@@ -79,7 +79,7 @@ bool createDirectory(std::string& path) {
 			IBMRAS_DEBUG(warning, "The network path was not found.");
 			break;
 			default:
-			IBMRAS_DEBUG(fine, "Directory %s could not be found, permissions? Attempting creation.", pathName);
+			IBMRAS_DEBUG_1(fine, "Directory %s could not be found, permissions? Attempting creation.", pathName);
 			if(!CreateDirectory(reinterpret_cast<LPCTSTR>(pathName), NULL)) {
 				switch (GetLastError()) {
 					case ERROR_ALREADY_EXISTS:
@@ -144,7 +144,7 @@ bool createFile(std::string& path) {
 		switch (GetLastError()) {
 			case ERROR_PATH_NOT_FOUND:
 				IBMRAS_DEBUG_1(fine, "File %s was not found. Attempting to create.", pathName);
-				fileHandle = CreateFile(reinterpret_cast<LPCTSTR>(pathName), NULL, (GENERIC_READ | GENERIC_WRITE), 0, (FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE), NULL, CREATE_NEW, FILE_ATTRIBUTE_HIDDEN, NULL);
+				fileHandle = CreateFile(reinterpret_cast<LPCTSTR>(pathName), (GENERIC_READ | GENERIC_WRITE), (FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE), NULL, CREATE_NEW, FILE_ATTRIBUTE_HIDDEN, NULL);
 				if(INVALID_HANDLE_VALUE == fileHandle) {
 					switch (GetLastError()) {
 						//if the directory already exists we will use it instead of the current one.
@@ -169,7 +169,7 @@ bool createFile(std::string& path) {
 			break;
 			default:
 			IBMRAS_DEBUG_1(fine, "File %s could not be found, permissions? Attempting to create", pathName);
-			fileHandle = CreateFile(reinterpret_cast<LPCTSTR>(pathName), NULL, (GENERIC_READ | GENERIC_WRITE), 0, (FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE), NULL, CREATE_NEW, FILE_ATTRIBUTE_HIDDEN, NULL);
+			fileHandle = CreateFile(reinterpret_cast<LPCTSTR>(pathName), (GENERIC_READ | GENERIC_WRITE), (FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE), NULL, CREATE_NEW, FILE_ATTRIBUTE_HIDDEN, NULL);
 			if(INVALID_HANDLE_VALUE == fileHandle) {
 				switch (GetLastError()) {
 					case ERROR_FILE_EXISTS:

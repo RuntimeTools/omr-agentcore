@@ -5,7 +5,7 @@
 #    "externalbinariesdir%": "<(PRODUCT_DIR)/deploy/external/binaries",
     "externalbinariesdir%": "./plugins",
     'build_id%': '.<!(["python", "./generate_build_id.py"])',
-    'coreversion%': '4.0.0',
+    'coreversion%': '4.0.1',
     "conditions": [
       ['OS=="aix"', {
         "portdir": "aix",
