@@ -155,6 +155,7 @@ void stopAllThreads() {
 
 	}
 	pthread_mutex_unlock(&threadMapMux);
+	stopping = false;
 }
 
 Semaphore::Semaphore(uint32 initial, uint32 max, const char* sourceName) {
