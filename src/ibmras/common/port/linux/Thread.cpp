@@ -22,6 +22,9 @@
 #include "time.h"
 #include <semaphore.h>
 #include <errno.h>
+#include <stdio.h>
+#include <string.h>
+
 
 #include "ibmras/common/port/ThreadData.h"
 #include "ibmras/common/port/Semaphore.h"
@@ -123,20 +126,33 @@ void condBroadcast() {
 }
 
 void stopAllThreads() {
+	int                   rc=0;
+  	char                  theName[16];
+  	memset(theName, 0x00, sizeof(theName));
 	IBMRAS_DEBUG(fine,"in thread.cpp->stopAllThreads");
 	//prevent new thread creation
-	pthread_mutex_lock(&threadMapMux);
 	stopping = true;
-	// wake currently sleeping threads
+	pthread_mutex_lock(&threadMapMux);
+    // wake currently sleeping threads
 	condBroadcast();
 	while (!threadMap.empty()) {
 		pthread_t top = threadMap.top();
+		threadMap.pop();
+		pthread_mutex_unlock(&threadMapMux);
+		rc = pthread_getname_np(top, theName, 16);
+      	if(0 == rc)
+      	{
+			// The attachment thread has been introduced by Oracle
+			// in their late attach classes
+			if(strncmp(theName, "Attachment", 10) == 0) { 
+				continue;
+			}
+      	}
 		pthread_cancel(top);
 		//wait for the thread to stop
-		pthread_mutex_unlock(&threadMapMux);
 		pthread_join(top, NULL);
 		pthread_mutex_lock(&threadMapMux);
-		threadMap.pop();
+
 	}
 	pthread_mutex_unlock(&threadMapMux);
 }

@@ -43,7 +43,9 @@ void WorkerThread::start() {
 }
 
 void WorkerThread::stop() {
+	source->complete(NULL);
 	running = false;
+	stopped = true;
 	semaphore.inc();
 	IBMRAS_DEBUG_1(debug, "Worker thread for %s stopped", source->header.name);
 }

@@ -314,7 +314,6 @@ void* processPublishLoop(ibmras::common::port::ThreadData* param) {
 		agent->publish();
 
 		if (!headless.compare("on") && !agent->isHeadlessRunning()) {
-			running = false;
 			agent->stop();
 		}
 
@@ -363,6 +362,7 @@ void* processPullSourceLoop(ibmras::common::port::ThreadData* data) {
 	}
 
 #if defined(_WINDOWS) || defined(_ZOS)
+
 	pool.stopAll();
 	agent->threadStop();
 #endif
