@@ -17,7 +17,9 @@
 /*
  * Functions that control thread behaviour
  */
-
+ #ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
+ #endif
 #include "pthread.h"
 #include "time.h"
 #include <semaphore.h>
@@ -109,7 +111,7 @@ void sleep(uint32 seconds) {
 	pthread_cond_timedwait(&c, &m, &t);
 	IBMRAS_DEBUG(finest,"Woke up");
 	pthread_mutex_unlock(&m);
-	
+
 	pthread_mutex_lock(&condMapMux);
 	condMap.erase(it);
 	pthread_mutex_unlock(&condMapMux);
@@ -144,7 +146,7 @@ void stopAllThreads() {
       	{
 			// The attachment thread has been introduced by Oracle
 			// in their late attach classes
-			if(strncmp(theName, "Attachment", 10) == 0) { 
+			if(strncmp(theName, "Attachment", 10) == 0) {
 				continue;
 			}
       	}
