@@ -66,6 +66,8 @@ typedef uint64_t UINT64;
 #endif
 
 typedef int64_t int64;
+#ifndef _AS400_TYPES_H
 typedef uint64_t uint64;
+#endif
 
 #endif
