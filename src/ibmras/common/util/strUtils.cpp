@@ -100,11 +100,12 @@ std::string expectedNativeCodepage() {
 }
 
 
-void convertCodePage(char * str, const char* toCodePage, const char * fromCodePage) {
+int convertCodePage(char * str, const char* toCodePage, const char * fromCodePage) {
+  // return 0: no change, 1: changed, -1: error
   std::string codepage = expectedNativeCodepage();
   if (codepage.compare("IBM-1047") == 0) {
       //already in that codepage - return
-      return;
+      return 0;
   }
   char *cp = (char*)ibmras::common::memory::allocate(strlen(str) + 1);
   strcpy(cp,str);
@@ -117,15 +118,19 @@ void convertCodePage(char * str, const char* toCodePage, const char * fromCodePa
 
   if ((cd = iconv_open(toCodePage, fromCodePage)) == (iconv_t)(-1)) {
     fprintf(stderr, "Cannot open converter to %s from %s\n", toCodePage, fromCodePage);
-    return;
+    return -1;
   }
 
   rc = iconv(cd, &inptr, &inleft, &outptr, &outleft);
   if (rc == -1) {
     fprintf(stderr, "Error in converting characters\n");
   }
+  else {
+    rc = 1;
+  }
   iconv_close(cd);
   ibmras::common::memory::deallocate((unsigned char**)&cp);
+  return rc;
 }
 #endif
 
@@ -135,9 +140,11 @@ void native2Ascii(char * str, bool convertToCurrentLocale) {
     if ( NULL != str )
     {
         if (convertToCurrentLocale) {
-          convertCodePage(str, expectedNativeCodepage().c_str(), "IBM-1047");
+          int rc = convertCodePage(str, expectedNativeCodepage().c_str(), "IBM-1047");
+          if (rc==1) { 
+            __etoa(str);
+          }
         }
-        __etoa(str);
     }
 #endif
 }
