@@ -71,7 +71,7 @@
       }],
       ['OS in "os390 zos"', {
         "defines": [ "_ZOS", "_UNIX03_THREADS" ],
-        'cflags_cc': ['-Wc,EXPORTALL', '-qnoconvlit'],
+        'cflags_cc': ['-Wc,EXPORTALL', '-qascii'],
         'cflags!': [ '-fno-omit-frame-pointer' ],
       }],
       ['OS=="linux"', {
