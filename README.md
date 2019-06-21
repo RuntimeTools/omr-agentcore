@@ -22,6 +22,7 @@ Non-release versions of this project (for example on github.com/RuntimeTools/omr
 4.0.2
 
 ## Release History
+`4.0.3` - Remove test code due to GPL licence.  
 `4.0.2` - Linux headless re-attach fix.  
 `4.0.1` - Fix Windows FileUtil compilation errors.  
 `4.0.0` - Fixes for z/OS API connections and semaphore reuse.  
