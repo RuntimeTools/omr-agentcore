@@ -11,4 +11,4 @@ Authors ordered by first contribution:
  - Richard Lau (https://github.com/richardlau)
  - Gibson Fahnestock (https://github.com/gibfahn)
  - Abdirahim Musse (https://github.com/ab-m)
- 
+ - Gaby Baghdadi (https://github.com/gabylb)
