@@ -17,9 +17,9 @@
 /*
  * Functions that control thread behaviour
  */
- #ifndef _GNU_SOURCE
- #define _GNU_SOURCE
- #endif
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
 #include "pthread.h"
 #include "time.h"
 #include <semaphore.h>
@@ -128,7 +128,9 @@ void condBroadcast() {
 }
 
 void stopAllThreads() {
+#ifndef OMR_NODEJS
 	int                   rc=0;
+#endif
   	char                  theName[16];
   	memset(theName, 0x00, sizeof(theName));
 	IBMRAS_DEBUG(fine,"in thread.cpp->stopAllThreads");
@@ -141,6 +143,7 @@ void stopAllThreads() {
 		pthread_t top = threadMap.top();
 		threadMap.pop();
 		pthread_mutex_unlock(&threadMapMux);
+#ifndef OMR_NODEJS
 		rc = pthread_getname_np(top, theName, 16);
       	if(0 == rc)
       	{
@@ -150,6 +153,7 @@ void stopAllThreads() {
 				continue;
 			}
       	}
+#endif
 		pthread_cancel(top);
 		//wait for the thread to stop
 		pthread_join(top, NULL);
