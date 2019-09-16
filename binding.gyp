@@ -29,7 +29,7 @@
 
   "target_defaults": {
     "cflags_cc!": [ '-fno-exceptions' ],
-    "defines": [ "EXPORT", "IBMRAS_DEBUG_LOGGING" ],
+    "defines": [ "EXPORT", "IBMRAS_DEBUG_LOGGING", "OMR_NODEJS" ],
     "include_dirs": [ "src", "<(pahosrcdir)" ],
     "target_conditions": [
       ['_type=="shared_library"', {
