@@ -235,6 +235,9 @@
             "<(srcdir)/common/port/Lock.cpp",
           ],
         }],
+        ['OS=="linux"', {
+          "libraries=": [ "-Wl,-rpath=\$$ORIGIN/.." ],
+        }],
       ],
     },
     {
