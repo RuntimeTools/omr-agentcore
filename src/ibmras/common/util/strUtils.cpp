@@ -137,8 +137,8 @@ void native2Ascii(char * str, bool convertToCurrentLocale) {
     {
         if (convertToCurrentLocale) {
           convertCodePage(str, expectedNativeCodepage().c_str(), "IBM-1047");
-          __etoa(str);
         }
+        __etoa(str);
     }
 #endif
 }
