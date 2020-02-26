@@ -29,10 +29,6 @@
 #define VPRINT vsprintf
 #endif
 
-#ifdef _ZOS
-extern "C" int dprintf(int fd, const char *fmt, ...);
-#endif
-
 extern "C" {
 
 DECL void* ibmras_common_LogManager_getLogger(const char* name) {
@@ -60,12 +56,8 @@ void LogManager::processMsg(const std::string &msg) {
 		if (localLogFunc) {
 			localLogFunc(msg);
 		} else {
-#ifdef _ZOS
-                        dprintf(2,"%s\n",msg.c_str());
-#else
 			std::cerr << msg << '\n';
 			std::cerr.flush();
-#endif
 		}
 		return;
 	}
