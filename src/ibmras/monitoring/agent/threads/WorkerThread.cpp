@@ -45,9 +45,15 @@ void WorkerThread::start() {
 void WorkerThread::stop() {
 	source->complete(NULL);
 	running = false;
-	stopped = true;
+
+	// Issue 99: By setting stopped to true too early, ThreadPool
+	// might intermittently destruct us while we're still in processLoop.
+	// We've already set running=false, so processLoop will finish the
+	// next chance it gets and only then will set stopped=true.
+	//stopped = true;
+
 	semaphore.inc();
-	IBMRAS_DEBUG_1(debug, "Worker thread for %s stopped", source->header.name);
+	IBMRAS_DEBUG_1(debug, "Worker thread for %s stopping", source->header.name);
 }
 
 void* WorkerThread::cleanUp(ibmras::common::port::ThreadData* data) {
