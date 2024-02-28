@@ -43,7 +43,11 @@ void WorkerThread::start() {
 }
 
 void WorkerThread::stop() {
-	source->complete(NULL);
+	// Issue 102: By completing pull sources too early might
+	// intermittenlty destruct while still in processLoop.
+	#if !defined(_WINDOWS) && !defined(_ZOS)
+		source->complete(NULL);
+	#endif
 	running = false;
 
 	// Issue 99: By setting stopped to true too early, ThreadPool
