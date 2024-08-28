@@ -19,9 +19,10 @@ This project uses a semver-parsable X.0.Z version number for releases, where X i
 Non-release versions of this project (for example on github.com/RuntimeTools/omr-agentcore) will use semver-parsable X.0.Z-dev.B version numbers, where X.0.Z is the last release with Z incremented and B is an integer. For further information on the development process go to the  [appmetrics wiki][3]: [Developing](https://github.com/RuntimeTools/appmetrics/wiki/Developing).
 
 ## Version
-4.0.7
+4.0.8
 
 ## Release History
+`4.0.8` - Fixes abort during shutdown on z/OS.
 `4.0.7` - z/OS fixes for JVM crashes.  
 `4.0.6` - z/OS string conversion fix.  
 `4.0.5` - Fixes to support Appmetrics on Alpine.  
