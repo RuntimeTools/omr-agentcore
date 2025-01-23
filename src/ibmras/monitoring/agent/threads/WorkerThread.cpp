@@ -26,11 +26,17 @@ namespace threads {
 
 extern IBMRAS_DECLARE_LOGGER;
 
-
+#if defined(_ZOS)
+WorkerThread::WorkerThread(pullsource* pullSource) : data(threadEntry, cleanUp), countdown(0) {
+#else
 WorkerThread::WorkerThread(pullsource* pullSource) : semaphore(0, 1, pullSource->header.name), data(threadEntry, cleanUp), countdown(0) {
+#endif
 	source = pullSource;
 	running = false;
 	stopped = true;
+#if defined(_ZOS)
+	isDataPullAllowed = false;
+#endif
 	data.setArgs(this);
 }
 
@@ -55,8 +61,9 @@ void WorkerThread::stop() {
 	// We've already set running=false, so processLoop will finish the
 	// next chance it gets and only then will set stopped=true.
 	//stopped = true;
-
+#if !defined(_ZOS)
 	semaphore.inc();
+#endif
 	IBMRAS_DEBUG_1(debug, "Worker thread for %s stopping", source->header.name);
 }
 
@@ -74,9 +81,16 @@ void* WorkerThread::threadEntry(ibmras::common::port::ThreadData* data) {
 void WorkerThread::process(bool immediate) {
     IBMRAS_DEBUG_2(finest, "Worker thread process for %s, countdown is %d", source->header.name, countdown);
 	if ((immediate && countdown > 120) || (countdown == 0)) {
+#if defined(_ZOS)
+		isDataPullAllowed = true;
+#else
 		semaphore.inc();
+#endif
 		countdown = source->pullInterval;
 	} else {
+#if defined(_ZOS)
+		isDataPullAllowed = false;
+#endif
 		countdown--;
 	}
 }
@@ -89,7 +103,11 @@ void* WorkerThread::processLoop() {
 	IBMRAS_DEBUG_1(finest, "Worker thread started for %s", source->header.name);
 	Agent* agent = Agent::getInstance();
 	while (running) {
+#if defined(_ZOS)
+		if (isDataPullAllowed && running) {
+#else
 		if (semaphore.wait(1) && running) {
+#endif
 			IBMRAS_DEBUG_1(fine, "Pulling data from source %s", source->header.name);
 			monitordata* data = source->callback();
 			if (data != NULL) {
@@ -100,6 +118,9 @@ void* WorkerThread::processLoop() {
 				source->complete(data);
 			}
 		}
+#if defined(_ZOS)
+		ibmras::common::port::sleep(1);
+#endif
 	}
 
 	source->complete(NULL);

@@ -43,7 +43,11 @@ private:
 	void* processLoop();
 	bool running;
 	bool stopped;
+#if defined(_ZOS)
+	bool isDataPullAllowed;
+#else
 	ibmras::common::port::Semaphore semaphore;		/* sempahore to control data processing */
+#endif
 	pullsource* source;		/* source to pull data from */
 	ibmras::common::port::ThreadData data;
 	int countdown;
